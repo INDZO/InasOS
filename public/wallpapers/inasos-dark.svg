@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1200" role="img" aria-label="InasOS dark wallpaper">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18243a"/>
+      <stop offset="0.45" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#050816"/>
+    </linearGradient>
+    <radialGradient id="warm" cx="0.78" cy="0.18" r="0.58">
+      <stop offset="0" stop-color="#f97316" stop-opacity="0.72"/>
+      <stop offset="0.34" stop-color="#fb923c" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#02050a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cool" cx="0.17" cy="0.78" r="0.62">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.48"/>
+      <stop offset="0.42" stop-color="#0f766e" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#02050a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.74" numOctaves="3" seed="18"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.12"/>
+      </feComponentTransfer>
+    </filter>
+    <linearGradient id="ridge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2937" stop-opacity="0.86"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0.98"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1200" fill="url(#sky)"/>
+  <rect width="1920" height="1200" fill="url(#warm)"/>
+  <rect width="1920" height="1200" fill="url(#cool)"/>
+  <path d="M0 882C170 806 304 826 444 748C602 660 730 676 884 734C1014 783 1165 801 1294 718C1454 615 1650 618 1920 494V1200H0Z" fill="#1f2937" opacity="0.86"/>
+  <path d="M0 972C132 917 292 915 448 870C648 812 774 761 944 820C1120 881 1268 935 1436 852C1624 760 1738 764 1920 710V1200H0Z" fill="url(#ridge)"/>
+  <path d="M0 1015C146 957 354 1026 526 962C715 892 855 916 1012 980C1184 1051 1392 1051 1554 974C1705 902 1804 894 1920 868V1200H0Z" fill="#111827" opacity="0.9"/>
+  <rect width="1920" height="1200" filter="url(#grain)" opacity="0.35"/>
+</svg>

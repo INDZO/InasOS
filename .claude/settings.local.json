@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(npm --version)",
-      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack --yes)"
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack --yes)",
+      "Bash(npm install *)",
+      "Bash(npm view *)",
+      "Bash(npm run *)",
+      "Bash(node -e \"const m=require\\('lucide-react'\\); console.log\\('Github:', !!m.Github, 'Linkedin:', !!m.Linkedin, 'Link:', !!m.Link, 'ExternalLink:', !!m.ExternalLink, 'SquareTerminal:', !!m.SquareTerminal, 'FolderKanban:', !!m.FolderKanban, 'Gamepad2:', !!m.Gamepad2, 'BatteryFull:', !!m.BatteryFull, 'Signal:', !!m.Signal, 'Wifi:', !!m.Wifi, 'Trophy:', !!m.Trophy, 'Sparkles:', !!m.Sparkles\\)\")",
+      "Bash(taskkill //PID 9276 //F)",
+      "Bash(rm -f dev-smoke.log next-dev.err.log next-dev.out.log)"
     ]
   }
 }
