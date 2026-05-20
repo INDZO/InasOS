@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="InasOS light wallpaper">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d3e3f5"/>
+      <stop offset="0.5" stop-color="#eef4fa"/>
+      <stop offset="1" stop-color="#fbeede"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.57" cy="0.4" r="0.55">
+      <stop offset="0" stop-color="#fed7aa" stop-opacity="0.92"/>
+      <stop offset="0.3" stop-color="#fb923c" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#fb923c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coolGlow" cx="0.1" cy="0.92" r="0.6">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunDisc" cx="0.42" cy="0.36" r="0.72">
+      <stop offset="0" stop-color="#fff4e2"/>
+      <stop offset="0.6" stop-color="#fdba74"/>
+      <stop offset="1" stop-color="#fb923c"/>
+    </radialGradient>
+    <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c2d3e8"/>
+      <stop offset="1" stop-color="#aec1da"/>
+    </linearGradient>
+    <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9fb2cf"/>
+      <stop offset="1" stop-color="#8a9ec0"/>
+    </linearGradient>
+    <linearGradient id="m3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#76739a"/>
+      <stop offset="1" stop-color="#5d6b8f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#coolGlow)"/>
+  <rect width="1920" height="1080" fill="url(#sunGlow)"/>
+
+  <ellipse cx="1090" cy="560" rx="560" ry="96" fill="#fb923c" opacity="0.2"/>
+  <circle cx="1090" cy="450" r="226" fill="#fb923c" opacity="0.12"/>
+  <circle cx="1090" cy="450" r="142" fill="#fdba74" opacity="0.28"/>
+  <circle cx="1090" cy="450" r="100" fill="url(#sunDisc)"/>
+
+  <path d="M0 1080V650L240 552L470 624L700 540L940 612L1180 530L1410 606L1650 548L1920 596V1080Z" fill="url(#m1)"/>
+  <path d="M0 650L240 552L470 624L700 540L940 612L1180 530L1410 606L1650 548L1920 596" fill="none" stroke="#fb923c" stroke-width="2.5" opacity="0.4"/>
+  <path d="M0 1080V792L260 706L500 772L740 690L1000 766L1260 700L1500 776L1740 708L1920 760V1080Z" fill="url(#m2)"/>
+  <path d="M0 1080V930L300 856L560 922L820 850L1100 928L1380 858L1660 930L1920 872V1080Z" fill="url(#m3)"/>
+
+  <rect width="1920" height="1080" fill="#ffffff" opacity="0.06"/>
+</svg>
