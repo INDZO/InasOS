@@ -119,94 +119,158 @@ body {
 }
 
 /* Layered InasOS wallpaper. The base navy gradient is always painted so the
-   desktop never looks flat black; glow and grid layers are opacity-driven by
-   the wallpaper intensity control. */
+   desktop never looks flat black; the glow, accent and grid layers are
+   opacity-driven by the wallpaper intensity control. */
 .os-wallpaper-base {
   background:
-    radial-gradient(120% 92% at 50% -22%, rgba(34, 47, 76, 0.72), transparent 60%),
-    linear-gradient(150deg, #0c1326 0%, #080b16 50%, #101a30 100%);
+    radial-gradient(135% 105% at 50% -18%, #20335c, transparent 62%),
+    linear-gradient(165deg, #122146 0%, #0b1428 52%, #18264a 100%);
 }
 
 .os-wallpaper-glow {
   background:
     radial-gradient(
-      46rem 42rem at 14% 12%,
-      rgba(249, 115, 22, 0.36),
+      52rem 46rem at 8% 4%,
+      rgba(249, 115, 22, 0.58),
+      transparent 58%
+    ),
+    radial-gradient(
+      48rem 44rem at 94% 96%,
+      rgba(56, 189, 248, 0.46),
       transparent 60%
     ),
     radial-gradient(
-      42rem 40rem at 88% 84%,
-      rgba(56, 130, 246, 0.26),
-      transparent 62%
+      150% 64% at 50% 118%,
+      rgba(249, 115, 22, 0.34),
+      transparent 70%
     ),
     radial-gradient(
-      32rem 30rem at 80% 4%,
-      rgba(168, 85, 247, 0.18),
+      36rem 32rem at 88% 0%,
+      rgba(168, 85, 247, 0.34),
       transparent 60%
+    );
+}
+
+.os-wallpaper-accent {
+  background-image:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 46px,
+      rgba(255, 255, 255, 0.032) 46px 48px
+    ),
+    radial-gradient(
+      circle at 87% 15%,
+      transparent 0 158px,
+      rgba(249, 115, 22, 0.3) 159px 163px,
+      transparent 164px
+    ),
+    radial-gradient(
+      circle at 87% 15%,
+      transparent 0 232px,
+      rgba(249, 115, 22, 0.17) 233px 236px,
+      transparent 237px
+    ),
+    radial-gradient(
+      circle at 9% 88%,
+      transparent 0 138px,
+      rgba(56, 189, 248, 0.24) 139px 143px,
+      transparent 144px
     );
 }
 
 .os-wallpaper-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px);
+  background-size: 64px 64px;
   -webkit-mask-image: radial-gradient(
-    ellipse 92% 78% at 50% 36%,
-    #000 28%,
-    transparent 90%
+    ellipse 120% 110% at 50% 30%,
+    #000 50%,
+    transparent 100%
   );
   mask-image: radial-gradient(
-    ellipse 92% 78% at 50% 36%,
-    #000 28%,
-    transparent 90%
+    ellipse 120% 110% at 50% 30%,
+    #000 50%,
+    transparent 100%
   );
 }
 
 .os-wallpaper-vignette {
   background: radial-gradient(
-    130% 115% at 50% 32%,
-    transparent 54%,
-    rgba(0, 0, 0, 0.6) 100%
+    135% 120% at 50% 30%,
+    transparent 58%,
+    rgba(3, 6, 14, 0.62) 100%
   );
 }
 
 .theme-light .os-wallpaper-base {
   background:
-    radial-gradient(120% 92% at 50% -22%, rgba(255, 255, 255, 0.9), transparent 60%),
-    linear-gradient(150deg, #d6e4f2 0%, #eaf1f8 50%, #dde8f4 100%);
+    radial-gradient(135% 105% at 50% -18%, #ffffff, transparent 62%),
+    linear-gradient(165deg, #cfe0f2 0%, #e9f1f8 52%, #d7e4f3 100%);
 }
 
 .theme-light .os-wallpaper-glow {
   background:
     radial-gradient(
-      46rem 42rem at 14% 12%,
-      rgba(249, 115, 22, 0.24),
+      52rem 46rem at 8% 4%,
+      rgba(249, 115, 22, 0.32),
+      transparent 58%
+    ),
+    radial-gradient(
+      48rem 44rem at 94% 96%,
+      rgba(14, 165, 233, 0.3),
       transparent 60%
     ),
     radial-gradient(
-      42rem 40rem at 88% 84%,
-      rgba(56, 130, 246, 0.22),
-      transparent 62%
+      150% 64% at 50% 118%,
+      rgba(249, 115, 22, 0.2),
+      transparent 70%
     ),
     radial-gradient(
-      32rem 30rem at 80% 4%,
-      rgba(168, 85, 247, 0.14),
+      36rem 32rem at 88% 0%,
+      rgba(168, 85, 247, 0.2),
       transparent 60%
+    );
+}
+
+.theme-light .os-wallpaper-accent {
+  background-image:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 46px,
+      rgba(15, 23, 42, 0.03) 46px 48px
+    ),
+    radial-gradient(
+      circle at 87% 15%,
+      transparent 0 158px,
+      rgba(234, 88, 12, 0.22) 159px 163px,
+      transparent 164px
+    ),
+    radial-gradient(
+      circle at 87% 15%,
+      transparent 0 232px,
+      rgba(234, 88, 12, 0.13) 233px 236px,
+      transparent 237px
+    ),
+    radial-gradient(
+      circle at 9% 88%,
+      transparent 0 138px,
+      rgba(14, 165, 233, 0.22) 139px 143px,
+      transparent 144px
     );
 }
 
 .theme-light .os-wallpaper-grid {
   background-image:
-    linear-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
 }
 
 .theme-light .os-wallpaper-vignette {
   background: radial-gradient(
-    130% 115% at 50% 32%,
-    transparent 60%,
-    rgba(15, 23, 42, 0.14) 100%
+    135% 120% at 50% 30%,
+    transparent 62%,
+    rgba(15, 23, 42, 0.16) 100%
   );
 }
 
