@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Grid3X3, Moon, RotateCcw, Sun } from "lucide-react";
 import { desktopApps } from "@/data/apps";
-import DesktopWallpaper from "./DesktopWallpaper";
+import OSWallpaper from "@/components/OSWallpaper";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import DesktopIcon from "./DesktopIcon";
@@ -138,7 +138,7 @@ export default function DesktopOS() {
         closeMenus();
       }}
     >
-      <DesktopWallpaper />
+      <OSWallpaper />
       <TopBar
         onArrangeIcons={() => arrangeIcons(arrangedPositions)}
         onResetDesktop={resetDesktopLayout}

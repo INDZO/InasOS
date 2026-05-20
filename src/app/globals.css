@@ -39,7 +39,6 @@
   --os-border-strong: rgba(255, 255, 255, 0.22);
   --os-selection: rgba(59, 130, 246, 0.24);
   --os-shadow: rgba(0, 0, 0, 0.74);
-  --os-wallpaper-image: url("/wallpapers/inasos-dark.svg?v=2");
 }
 
 .theme-light {
@@ -61,7 +60,6 @@
   --os-border-strong: rgba(15, 23, 42, 0.23);
   --os-selection: rgba(59, 130, 246, 0.16);
   --os-shadow: rgba(15, 23, 42, 0.18);
-  --os-wallpaper-image: url("/wallpapers/inasos-light.svg?v=2");
 }
 
 * {
@@ -120,19 +118,110 @@ body {
   border: 2px solid transparent;
 }
 
-.os-wallpaper {
+/* Layered InasOS wallpaper. The base navy gradient is always painted so the
+   desktop never looks flat black; glow and grid layers are opacity-driven by
+   the wallpaper intensity control. */
+.os-wallpaper-base {
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.1), transparent 42%),
-    var(--os-wallpaper-image);
-  background-position: center;
-  background-size: cover;
+    radial-gradient(120% 92% at 50% -22%, rgba(34, 47, 76, 0.72), transparent 60%),
+    linear-gradient(150deg, #0c1326 0%, #080b16 50%, #101a30 100%);
+}
+
+.os-wallpaper-glow {
+  background:
+    radial-gradient(
+      46rem 42rem at 14% 12%,
+      rgba(249, 115, 22, 0.36),
+      transparent 60%
+    ),
+    radial-gradient(
+      42rem 40rem at 88% 84%,
+      rgba(56, 130, 246, 0.26),
+      transparent 62%
+    ),
+    radial-gradient(
+      32rem 30rem at 80% 4%,
+      rgba(168, 85, 247, 0.18),
+      transparent 60%
+    );
+}
+
+.os-wallpaper-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 92% 78% at 50% 36%,
+    #000 28%,
+    transparent 90%
+  );
+  mask-image: radial-gradient(
+    ellipse 92% 78% at 50% 36%,
+    #000 28%,
+    transparent 90%
+  );
+}
+
+.os-wallpaper-vignette {
+  background: radial-gradient(
+    130% 115% at 50% 32%,
+    transparent 54%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+.theme-light .os-wallpaper-base {
+  background:
+    radial-gradient(120% 92% at 50% -22%, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(150deg, #d6e4f2 0%, #eaf1f8 50%, #dde8f4 100%);
+}
+
+.theme-light .os-wallpaper-glow {
+  background:
+    radial-gradient(
+      46rem 42rem at 14% 12%,
+      rgba(249, 115, 22, 0.24),
+      transparent 60%
+    ),
+    radial-gradient(
+      42rem 40rem at 88% 84%,
+      rgba(56, 130, 246, 0.22),
+      transparent 62%
+    ),
+    radial-gradient(
+      32rem 30rem at 80% 4%,
+      rgba(168, 85, 247, 0.14),
+      transparent 60%
+    );
+}
+
+.theme-light .os-wallpaper-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+}
+
+.theme-light .os-wallpaper-vignette {
+  background: radial-gradient(
+    130% 115% at 50% 32%,
+    transparent 60%,
+    rgba(15, 23, 42, 0.14) 100%
+  );
 }
 
 .boot-wallpaper {
   background:
-    radial-gradient(620px 380px at 50% 38%, rgba(249, 115, 22, 0.11), transparent 68%),
-    radial-gradient(780px 520px at 50% 100%, rgba(56, 189, 248, 0.08), transparent 72%),
-    linear-gradient(180deg, #05070b 0%, #02040a 100%);
+    radial-gradient(620px 380px at 50% 38%, rgba(249, 115, 22, 0.16), transparent 68%),
+    radial-gradient(780px 520px at 50% 100%, rgba(56, 189, 248, 0.1), transparent 72%),
+    linear-gradient(165deg, #0c1326 0%, #05070b 55%, #101a30 100%);
+}
+
+.theme-light .boot-wallpaper {
+  background:
+    radial-gradient(620px 380px at 50% 38%, rgba(249, 115, 22, 0.2), transparent 68%),
+    radial-gradient(780px 520px at 50% 100%, rgba(56, 189, 248, 0.16), transparent 72%),
+    linear-gradient(165deg, #e8eff7 0%, #f3f6fa 55%, #dce6f1 100%);
 }
 
 .os-grid {

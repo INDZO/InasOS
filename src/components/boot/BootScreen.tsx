@@ -79,7 +79,7 @@ export default function BootScreen({ onComplete }: Props) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#05070B]"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--os-bg)]"
         aria-label="InasOS booting"
       >
         <div className="boot-wallpaper absolute inset-0" />
@@ -97,15 +97,16 @@ export default function BootScreen({ onComplete }: Props) {
               markClassName="h-20 w-20 rounded-[22px]"
               showWordmark={false}
             />
-            <div className="mt-5 text-2xl font-semibold tracking-tight text-zinc-100">
-              InasOS <span className="text-orange-300">v1.0</span>
+            <div className="mt-5 text-2xl font-semibold tracking-tight text-[var(--os-text)]">
+              InasOS{" "}
+              <span className="text-[color:var(--os-accent)]">v1.0</span>
             </div>
-            <div className="mt-1 text-xs text-zinc-400">
+            <div className="mt-1 text-xs text-[var(--os-muted)]">
               {copy.bootSubtitle as string}
             </div>
           </motion.div>
 
-          <div className="mx-auto h-1.5 max-w-[280px] overflow-hidden rounded-full border border-white/10 bg-white/[0.08]">
+          <div className="mx-auto h-1.5 max-w-[280px] overflow-hidden rounded-full border border-[color:var(--os-border)] bg-[var(--os-control)]">
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-orange-300 via-orange-400 to-amber-200"
               animate={{
@@ -115,7 +116,7 @@ export default function BootScreen({ onComplete }: Props) {
             />
           </div>
 
-          <div className="terminal-font mt-8 text-[12px] leading-6 text-zinc-300 sm:text-[13px] sm:leading-7">
+          <div className="terminal-font mt-8 text-[12px] leading-6 text-[var(--os-muted)] sm:text-[13px] sm:leading-7">
             {bootLines.slice(0, step).map((line, idx) => (
               <motion.div
                 key={line}
@@ -132,7 +133,7 @@ export default function BootScreen({ onComplete }: Props) {
                 >
                   OK
                 </span>
-                <span className="text-zinc-200">{line}</span>
+                <span className="text-[var(--os-text)]">{line}</span>
                 {idx === step - 1 && !done && (
                   <span className="ml-1 inline-block h-3 w-2 animate-pulse bg-orange-400/80" />
                 )}
@@ -144,7 +145,7 @@ export default function BootScreen({ onComplete }: Props) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className="mt-4 text-orange-300"
+                className="mt-4 text-[color:var(--os-accent)]"
               >
                 {copy.bootWelcome as string}
               </motion.div>
@@ -154,7 +155,7 @@ export default function BootScreen({ onComplete }: Props) {
           <div className="mt-10 flex justify-center">
             <button
               onClick={handleSkip}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-zinc-100"
+              className="rounded-full border border-[color:var(--os-border)] bg-[var(--os-control)] px-3 py-1.5 text-xs text-[var(--os-muted)] transition-colors hover:bg-[var(--os-control-hover)] hover:text-[var(--os-text)]"
               aria-label="Skip boot animation"
             >
               {copy.bootSkip as string}

@@ -8,7 +8,9 @@
       "Bash(npm run *)",
       "Bash(node -e \"const m=require\\('lucide-react'\\); console.log\\('Github:', !!m.Github, 'Linkedin:', !!m.Linkedin, 'Link:', !!m.Link, 'ExternalLink:', !!m.ExternalLink, 'SquareTerminal:', !!m.SquareTerminal, 'FolderKanban:', !!m.FolderKanban, 'Gamepad2:', !!m.Gamepad2, 'BatteryFull:', !!m.BatteryFull, 'Signal:', !!m.Signal, 'Wifi:', !!m.Wifi, 'Trophy:', !!m.Trophy, 'Sparkles:', !!m.Sparkles\\)\")",
       "Bash(taskkill //PID 9276 //F)",
-      "Bash(rm -f dev-smoke.log next-dev.err.log next-dev.out.log)"
+      "Bash(rm -f dev-smoke.log next-dev.err.log next-dev.out.log)",
+      "Bash(git push *)",
+      "Bash(npx --yes vercel whoami)"
     ]
   }
 }
