@@ -16,7 +16,7 @@ export default function WindowManager() {
       <AnimatePresence>
         {order.map((id) => {
           const win = windows[id];
-          if (!win || win.minimized) return null;
+          if (!win) return null;
           const app = appById(id);
           if (!app) return null;
           return (

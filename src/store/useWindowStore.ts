@@ -12,11 +12,17 @@ type WindowState = {
   openWindow: (id: AppId) => void;
   closeWindow: (id: AppId) => void;
   minimizeWindow: (id: AppId) => void;
+  minimizeAll: () => void;
   restoreWindow: (id: AppId) => void;
   focusWindow: (id: AppId) => void;
   updateWindowPosition: (id: AppId, position: WindowPosition) => void;
   closeAll: () => void;
 };
+
+const frontmostWindow = (windows: Record<string, OSWindow>): AppId | null =>
+  Object.values(windows)
+    .filter((window) => !window.minimized)
+    .sort((a, b) => b.zIndex - a.zIndex)[0]?.id ?? null;
 
 const initialPosition = (id: AppId, index: number): WindowPosition => {
   const def = appById(id);
@@ -75,7 +81,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
       const order = s.order.filter((x) => x !== id);
       const activeWindowId =
         s.activeWindowId === id
-          ? order[order.length - 1] ?? null
+          ? frontmostWindow(rest)
           : s.activeWindowId;
       return { windows: rest, order, activeWindowId };
     });
@@ -84,12 +90,19 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     set((s) => {
       const w = s.windows[id];
       if (!w) return s;
+      const windows = { ...s.windows, [id]: { ...w, minimized: true } };
       return {
-        windows: { ...s.windows, [id]: { ...w, minimized: true } },
-        activeWindowId: s.activeWindowId === id ? null : s.activeWindowId,
+        windows,
+        activeWindowId: s.activeWindowId === id ? frontmostWindow(windows) : s.activeWindowId,
       };
     });
   },
+  minimizeAll: () => set((state) => ({
+    windows: Object.fromEntries(Object.entries(state.windows).map(([id, window]) =>
+      [id, window.minimized ? window : { ...window, minimized: true }]
+    )),
+    activeWindowId: null,
+  })),
   restoreWindow: (id) => {
     const nextZ = get().nextZ + 1;
     set((s) => {
@@ -109,7 +122,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     const nextZ = get().nextZ + 1;
     set((s) => {
       const w = s.windows[id];
-      if (!w) return s;
+      if (!w || w.minimized || s.activeWindowId === id) return s;
       return {
         windows: { ...s.windows, [id]: { ...w, zIndex: nextZ } },
         activeWindowId: id,
@@ -124,5 +137,5 @@ export const useWindowStore = create<WindowState>((set, get) => ({
       return { windows: { ...s.windows, [id]: { ...w, position } } };
     });
   },
-  closeAll: () => set({ windows: {}, order: [], activeWindowId: null }),
+  closeAll: () => set({ windows: {}, order: [], activeWindowId: null, nextZ: 10 }),
 }));

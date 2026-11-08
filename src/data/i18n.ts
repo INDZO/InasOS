@@ -1,3 +1,5 @@
+import { profile, education, achievement } from "@/data/profile";
+import { projects } from "@/data/projects";
 import type { AppId } from "@/types/os";
 import type { Achievement, Education, Profile, Project } from "@/types/portfolio";
 import type { Language } from "@/store/useLanguageStore";
@@ -101,70 +103,18 @@ export const shellCopy = {
 } satisfies Record<Language, Record<string, string | string[]>>;
 
 export const localizedProfile: Record<Language, Profile> = {
-  en: {
-    name: "Inas Hamzagić",
-    role: "Software Engineering Student",
-    tagline:
-      "Software Engineering student focused on web development, software development, algorithms and problem-solving.",
-    bio: "I am a third-year Software Engineering student at the State University of Novi Pazar. I am interested in software development, web development, algorithms, databases and practical problem-solving. I enjoy building real projects, learning through implementation and improving my skills through teamwork, hackathons and hands-on development.",
-    focus:
-      "Currently building full-stack web projects, sharpening algorithms and data structures, and exploring modern frontend and backend stacks.",
-    status:
-      "Open to internships, junior developer opportunities and collaboration.",
-    email: "hamzagicinas@gmail.com",
-    github: "https://github.com/INDZO",
-    linkedin: null,
-  },
+  en: profile,
   sr: {
-    name: "Inas Hamzagić",
-    role: "Student softverskog inženjerstva",
-    tagline:
-      "Student softverskog inženjerstva fokusiran na web razvoj, razvoj softvera, algoritme i rešavanje problema.",
-    bio: "Student sam treće godine softverskog inženjerstva na Državnom univerzitetu u Novom Pazaru. Zanimaju me razvoj softvera, web razvoj, algoritmi, baze podataka i praktično rešavanje problema. Najviše učim kroz realne projekte, timski rad, hackathone i konkretnu implementaciju.",
-    focus:
-      "Trenutno radim na full-stack web projektima, jačam algoritme i strukture podataka i istražujem moderne frontend i backend tehnologije.",
-    status:
-      "Otvoren sam za prakse, junior developer prilike i saradnju.",
-    email: "hamzagicinas@gmail.com",
-    github: "https://github.com/INDZO",
-    linkedin: null,
+    ...profile,
+    role: "Student softverskog inženjerstva · Full-stack razvoj",
+    tagline: "Od interfejsa do baze podataka. Razvijam praktične web aplikacije i učim pretvarajući ideje u stvarnost.",
+    bio: "Ja sam Inas, student softverskog inženjerstva na Državnom univerzitetu u Novom Pazaru. Razvijam web aplikacije koristeći React, Next.js, ASP.NET Core i Laravel, povezujući promišljene interfejse sa API-jima i bazama podataka. Moji projekti obuhvataju upravljanje uslugama, alate za učenje i interaktivna iskustva. Volim timsko rešavanje problema i tražim praksu ili junior poziciju na kojoj mogu da doprinesem i nastavim da učim.",
+    focus: "Full-stack web razvoj, algoritmi i strukture podataka, relacione baze i postavljanje aplikacija na Linux servere.",
+    status: "Otvoren sam za prakse, junior developer pozicije i saradnju.",
   },
 };
-
 export const localizedEducation: Record<Language, Education[]> = {
-  en: [
-    {
-      institution: "State University of Novi Pazar",
-      degree: "Bachelor Studies in Software Engineering",
-      start: "01/10/2023",
-      end: "current",
-      topics: [
-        "Software engineering",
-        "Programming",
-        "Algorithms and data structures",
-        "Databases",
-        "Web technologies",
-        "Computer networks",
-        "Operating systems",
-        "Mathematics",
-      ],
-    },
-    {
-      institution: "Gymnasium Novi Pazar",
-      degree: "Secondary School Diploma — Gymnasium, IT Department",
-      start: "01/09/2019",
-      end: "16/06/2023",
-      topics: [
-        "Information technology",
-        "Computer science",
-        "Programming basics",
-        "Mathematics",
-        "Databases",
-        "Web design",
-        "English language",
-      ],
-    },
-  ],
+  en: education,
   sr: [
     {
       institution: "Državni univerzitet u Novom Pazaru",
@@ -201,13 +151,7 @@ export const localizedEducation: Record<Language, Education[]> = {
 };
 
 export const localizedAchievement: Record<Language, Achievement> = {
-  en: {
-    title: "1st Place — 3rd UNINP Hackathon",
-    organizer: "International University of Novi Pazar",
-    date: "25/04/2026",
-    description:
-      "Won 1st place at the 3rd UNINP Hackathon by developing a web application within 24 hours, demonstrating programming, teamwork and problem-solving skills.",
-  },
+  en: achievement,
   sr: {
     title: "1. mesto — 3. UNINP Hackathon",
     organizer: "Internacionalni univerzitet u Novom Pazaru",
@@ -217,109 +161,11 @@ export const localizedAchievement: Record<Language, Achievement> = {
   },
 };
 
-export const localizedProjects: Record<Language, Project[]> = {
-  en: [
-    {
+const projectTranslationsSr: Pick<Project, "id" | "type" | "description" | "features" | "learned">[] = [{
       id: "servispro",
-      name: "ServisPro",
-      type: "Student full-stack web project",
-      description:
-        "Auto-service platform with client, service provider and admin workflows.",
-      tech: ["React", "ASP.NET Core", "MS SQL Server", "REST API"],
-      features: [
-        "User roles",
-        "Client vehicle management",
-        "Service appointment scheduling",
-        "Service status tracking",
-        "Admin management",
-        "Ratings and reviews",
-      ],
-      learned:
-        "Building role-based workflows, REST API integration, database-backed application logic and project organization.",
-      github: null,
-      live: null,
-    },
-    {
-      id: "elitdent",
-      name: "ElitDent",
-      type: "Web application / deployment project",
-      description: "Dental clinic web application deployed on an Ubuntu server.",
-      tech: ["Laravel", "PHP", "MySQL", "Nginx", "Ubuntu", "HTTPS"],
-      features: [
-        "Clinic web application structure",
-        "Production deployment",
-        "Nginx configuration",
-        "SSL/HTTPS setup",
-        "MySQL integration",
-      ],
-      learned:
-        "Linux server deployment, domain/HTTPS setup, Nginx configuration and production troubleshooting.",
-      github: null,
-      live: null,
-    },
-    {
-      id: "knowledge-that-doesnt-fade",
-      name: "Knowledge That Doesn't Fade",
-      type: "Hackathon / AI learning project",
-      description:
-        "AI-assisted learning application focused on helping students build durable knowledge.",
-      tech: ["Next.js", "AI integration", "Web technologies"],
-      features: [
-        "Learning-focused workflow",
-        "Material organization",
-        "Retrieval-practice concept",
-        "AI-assisted study flow",
-      ],
-      learned:
-        "AI product thinking, hackathon execution, teamwork under time pressure and presentation.",
-      github: null,
-      live: null,
-    },
-    {
-      id: "stomatology-is",
-      name: "Stomatology IS",
-      type: "Systems analysis / database design project",
-      description:
-        "Information system modeling project for a dental clinic.",
-      tech: ["SSA", "DFD", "EER", "Relational database design"],
-      features: [
-        "Context diagram",
-        "Data flow modeling",
-        "Entity-relationship modeling",
-        "Relational schema planning",
-      ],
-      learned:
-        "Requirements modeling, database design, system decomposition and documentation.",
-      github: null,
-      live: null,
-    },
-    {
-      id: "hackathon-app",
-      name: "Hackathon App",
-      type: "Hackathon project",
-      description:
-        "Web application built during the 3rd UNINP Hackathon, where my team won 1st place.",
-      tech: ["Web technologies", "AI integration"],
-      features: [
-        "24-hour development",
-        "Team collaboration",
-        "Demo / presentation",
-        "Problem-solving under pressure",
-      ],
-      learned:
-        "Fast prototyping, scope control, teamwork and presenting a product under time constraints.",
-      github: null,
-      live: null,
-    },
-  ],
-  sr: [
-    {
-      id: "servispro",
-      name: "ServisPro",
       type: "Studentski full-stack web projekat",
       description:
-        "Platforma za auto-servis sa tokovima za klijente, servisere i administratora.",
-      tech: ["React", "ASP.NET Core", "MS SQL Server", "REST API"],
+        "Platforma na kojoj vozači dodaju vozila i zakazuju servise, serviseri ažuriraju status, a administratori nadgledaju rad sistema.",
       features: [
         "Korisničke uloge",
         "Upravljanje vozilima klijenata",
@@ -329,16 +175,12 @@ export const localizedProjects: Record<Language, Project[]> = {
         "Ocene i recenzije",
       ],
       learned:
-        "Role-based tokovi, REST API integracija, logika aplikacije nad bazom i organizacija projekta.",
-      github: null,
-      live: null,
+        "Povezivanje React interfejsa sa REST API-jem, modelovanje korisničkih uloga i rad sa relacionom bazom.",
     },
     {
       id: "elitdent",
-      name: "ElitDent",
-      type: "Web aplikacija / deployment projekat",
-      description: "Web aplikacija za stomatološku ordinaciju deploy-ovana na Ubuntu server.",
-      tech: ["Laravel", "PHP", "MySQL", "Nginx", "Ubuntu", "HTTPS"],
+      type: "Web aplikacija i postavljanje na server",
+      description: "Laravel aplikacija za stomatološku ordinaciju, dostupna preko HTTPS-a uz Nginx na Ubuntu serveru i MySQL bazu.",
       features: [
         "Struktura aplikacije za ordinaciju",
         "Produkcijski deployment",
@@ -347,35 +189,27 @@ export const localizedProjects: Record<Language, Project[]> = {
         "MySQL integracija",
       ],
       learned:
-        "Linux server deployment, domen/HTTPS podešavanje, Nginx konfiguracija i produkcijski troubleshooting.",
-      github: null,
-      live: null,
+        "Postavljanje aplikacije na Linux server, podešavanje domena, HTTPS-a i Nginx-a i otklanjanje grešaka u produkciji.",
     },
     {
       id: "knowledge-that-doesnt-fade",
-      name: "Knowledge That Doesn't Fade",
-      type: "Hackathon / AI learning projekat",
+      type: "Hakatonski projekat za učenje uz AI",
       description:
         "AI aplikacija za učenje fokusirana na dugotrajnije pamćenje i organizaciju gradiva.",
-      tech: ["Next.js", "AI integration", "Web technologies"],
       features: [
         "Tok učenja",
         "Organizacija materijala",
-        "Retrieval-practice koncept",
-        "AI-assisted study flow",
+        "Vežbanje aktivnog prisećanja",
+        "Podrška za učenje uz AI",
       ],
       learned:
-        "AI product thinking, hackathon execution, timski rad pod pritiskom i prezentacija.",
-      github: null,
-      live: null,
+        "Oblikovanje AI funkcionalnosti za učenje i timski rad na prototipu i prezentaciji u kratkom roku.",
     },
     {
       id: "stomatology-is",
-      name: "Stomatology IS",
       type: "Analiza sistema / projektovanje baze",
       description:
-        "Model informacionog sistema za stomatološku ordinaciju.",
-      tech: ["SSA", "DFD", "EER", "Relational database design"],
+        "Dizajn informacionog sistema stomatološke ordinacije, od dijagrama tokova podataka do relacione šeme baze.",
       features: [
         "Kontekst dijagram",
         "Modelovanje tokova podataka",
@@ -384,30 +218,22 @@ export const localizedProjects: Record<Language, Project[]> = {
       ],
       learned:
         "Analiza zahteva, projektovanje baze, dekompozicija sistema i dokumentovanje rešenja.",
-      github: null,
-      live: null,
     },
-    {
-      id: "hackathon-app",
-      name: "Hackathon App",
-      type: "Hackathon projekat",
-      description:
-        "Web aplikacija napravljena tokom 3. UNINP Hackathon-a, gde je tim osvojio 1. mesto.",
-      tech: ["Web technologies", "AI integration"],
-      features: [
-        "Razvoj u 24 sata",
-        "Timska saradnja",
-        "Demo i prezentacija",
-        "Rešavanje problema pod pritiskom",
-      ],
-      learned:
-        "Brzo prototipovanje, kontrola opsega, timski rad i prezentovanje proizvoda u kratkom roku.",
-      github: null,
-      live: null,
-    },
-  ],
+];
+const additionalProjectCopySr: Record<string, Partial<Project>> = {
+  inasos: { type: "Interaktivni developer portfolio", description: "Portfolio koji istražuješ kao operativni sistem: desktop radni prostor, mobilne aplikacije i interaktivni terminal.", features: ["Upravljanje desktop prozorima", "Poseban mobilni prikaz", "Srpski i engleski jezik", "Pretraga projekata i terminal komande"], learned: "Upravljanje stanjem interfejsa, prilagodljive interakcije i pristupačna navigacija.", role: "Dizajn i razvoj portfolija" },
+  "bitka-upside-down": { type: "Strateška igra u realnom vremenu", description: "8-bit igra potere na poteze u kojoj igrači skupljaju sećanja i pokušavaju da stignu do portala. Django sprovodi pravila i šalje poteze preko WebSocket veze.", features: ["Pravila i tajmeri na serveru", "WebSocket uz REST alternativu", "AI pretraga i pronalaženje putanje", "Statistike igre"], learned: "Usklađivanje interfejsa i serverskih odluka i primena algoritama kroz igru.", role: "Full-stack projekat igre" },
+  telecom: { type: "Telekomunikacioni sajt", description: "Višestranični projekat web dizajna za predstavljanje usluga i paketa, objavljen na GitHub Pages.", features: ["Stranice usluga i paketa", "Prototipi kontakta i korisničkog naloga", "Navigacija između stranica", "Statičko objavljivanje"], learned: "Izrada povezanog višestraničnog sajta pomoću osnovnih web tehnologija.", role: "Projekat web dizajna" },
+  "library-is": { type: "Informacioni sistem biblioteke", description: "Windows aplikacija za knjige, članove i pozajmice, izrađena kao maturski rad iz baza podataka.", features: ["Upravljanje knjigama i članovima", "Izdavanje knjiga", "Pretraga i CRUD forme", "Pristup bazi kroz repozitorijume"], learned: "Modelovanje relacionih podataka i povezivanje desktop interfejsa sa bazom.", role: "Maturski projekat" },
+  servispro: { role: "Studentski timski projekat" },
+  "knowledge-that-doesnt-fade": { role: "Timski hackathon projekat" },
+  elitdent: { role: "Razvoj i postavljanje web aplikacije" },
+  "stomatology-is": { role: "Akademski projekat analize sistema" },
 };
-
+export const localizedProjects: Record<Language, Project[]> = {
+  en: projects,
+  sr: projects.map((project) => ({ ...project, ...projectTranslationsSr.find((copy) => copy.id === project.id), ...additionalProjectCopySr[project.id] })),
+};
 export const appName = (id: AppId, language: Language) =>
   appCopy[language][id]?.title ?? appCopy.en[id].title;
 

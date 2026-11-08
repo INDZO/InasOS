@@ -42,33 +42,61 @@ export default function DesktopWindow({
   const updateWindowPosition = useWindowStore((s) => s.updateWindowPosition);
   const language = useLanguageStore((s) => s.language);
   const title = appName(app.id, language);
+  const scrolls = app.id !== "finder";
 
   const [size, setSize] = useState({
     width: app.defaultSize?.width ?? DEFAULT_W,
     height: app.defaultSize?.height ?? DEFAULT_H,
   });
   const [maximized, setMaximized] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const dragCleanup = useRef<(() => void) | null>(null);
+  const [pos, setPos] = useState(win.position);
+  const posRef = useRef(win.position);
+
+  const dismiss = (action: (id: AppDefinition["id"]) => void) => {
+    action(app.id);
+    if (useWindowStore.getState().activeWindowId) return;
+    requestAnimationFrame(() => {
+      if (useWindowStore.getState().activeWindowId) return;
+      const button = document.querySelector<HTMLButtonElement>(`[data-dock-app="${app.id}"]`);
+      (button ?? document.querySelector<HTMLButtonElement>("[data-os-dock] button"))?.focus({ preventScroll: true });
+    });
+  };
+
+  useEffect(() => {
+    if (!active || win.minimized) return;
+    if (!dialogRef.current?.contains(document.activeElement)) {
+      dialogRef.current?.focus({ preventScroll: true });
+    }
+  }, [active, win.minimized]);
+
+  useEffect(() => () => dragCleanup.current?.(), []);
 
   useEffect(() => {
     const compute = () => {
       const vw = globalThis.window?.innerWidth ?? 1280;
       const vh = globalThis.window?.innerHeight ?? 800;
-      setSize({
-        width: clampSize(app.defaultSize?.width ?? DEFAULT_W, vw, 80),
-        height: clampSize(
+      const width = clampSize(app.defaultSize?.width ?? DEFAULT_W, vw, 48);
+      const height = clampSize(
           app.defaultSize?.height ?? DEFAULT_H,
           vh,
-          TOPBAR_OFFSET + 90
-        ),
-      });
+          TOPBAR_OFFSET + 108,
+          180
+        );
+      setSize({ width, height });
+      const next = {
+        x: Math.max(12, Math.min(posRef.current.x, vw - width - 12)),
+        y: Math.max(TOPBAR_OFFSET, Math.min(posRef.current.y, vh - height - 94)),
+      };
+      posRef.current = next;
+      setPos(next);
+      updateWindowPosition(app.id, next);
     };
     compute();
     globalThis.window?.addEventListener("resize", compute);
     return () => globalThis.window?.removeEventListener("resize", compute);
-  }, [app.defaultSize?.width, app.defaultSize?.height]);
-
-  const [pos, setPos] = useState(win.position);
-  const posRef = useRef(win.position);
+  }, [app.id, app.defaultSize?.width, app.defaultSize?.height, updateWindowPosition]);
 
   useEffect(() => {
     if (
@@ -80,27 +108,25 @@ export default function DesktopWindow({
     }
   }, [win.position]);
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.button !== 0) return;
       if ((e.target as HTMLElement).closest("[data-no-drag]")) return;
       focusWindow(app.id);
       if (maximized) return;
+      e.preventDefault();
+      dragCleanup.current?.();
       const start = { x: e.clientX, y: e.clientY };
       const origin = { ...posRef.current };
 
-      const onMove = (ev: MouseEvent) => {
+      const onMove = (ev: PointerEvent) => {
         const dx = ev.clientX - start.x;
         const dy = ev.clientY - start.y;
         const vw = globalThis.window?.innerWidth ?? 1600;
         const vh = globalThis.window?.innerHeight ?? 900;
-        // keep at least 120px of the window visible
-        const minX = -size.width + 120;
-        const maxX = vw - 120;
-        const minY = TOPBAR_OFFSET;
-        const maxY = vh - 80;
         const next = {
-          x: Math.min(Math.max(minX, origin.x + dx), maxX),
-          y: Math.min(Math.max(minY, origin.y + dy), maxY),
+          x: Math.max(12, Math.min(origin.x + dx, vw - size.width - 12)),
+          y: Math.max(TOPBAR_OFFSET, Math.min(origin.y + dy, vh - size.height - 94)),
         };
         posRef.current = next;
         setPos(next);
@@ -108,30 +134,45 @@ export default function DesktopWindow({
 
       const onUp = () => {
         updateWindowPosition(app.id, posRef.current);
-        globalThis.window?.removeEventListener("mousemove", onMove);
-        globalThis.window?.removeEventListener("mouseup", onUp);
+        cleanup();
       };
-
-      globalThis.window?.addEventListener("mousemove", onMove);
-      globalThis.window?.addEventListener("mouseup", onUp);
+      const cleanup = () => {
+        globalThis.window?.removeEventListener("pointermove", onMove);
+        globalThis.window?.removeEventListener("pointerup", onUp);
+        globalThis.window?.removeEventListener("pointercancel", onUp);
+        dragCleanup.current = null;
+      };
+      dragCleanup.current = cleanup;
+      globalThis.window?.addEventListener("pointermove", onMove);
+      globalThis.window?.addEventListener("pointerup", onUp);
+      globalThis.window?.addEventListener("pointercancel", onUp);
     },
-    [app.id, focusWindow, updateWindowPosition, size.width, maximized]
+    [app.id, focusWindow, updateWindowPosition, size, maximized]
   );
 
   return (
     <motion.div
+      ref={dialogRef}
       initial={{ opacity: 0, scale: 0.97, y: 6 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97, y: 6 }}
       transition={{ duration: 0.16, ease: "easeOut" }}
       style={{
         width: maximized ? "calc(100vw - 24px)" : size.width,
-        height: maximized ? "calc(100dvh - 50px)" : size.height,
+        height: maximized ? "calc(100dvh - 134px)" : size.height,
         left: maximized ? 12 : pos.x,
-        top: maximized ? 34 : pos.y,
+        top: maximized ? TOPBAR_OFFSET : pos.y,
         zIndex: win.zIndex,
+        display: win.minimized ? "none" : undefined,
       }}
-      onMouseDown={() => focusWindow(app.id)}
+      onPointerDown={() => focusWindow(app.id)}
+      onFocus={() => focusWindow(app.id)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && !event.defaultPrevented) {
+          event.stopPropagation();
+          dismiss(closeWindow);
+        }
+      }}
       className={cn(
         "pointer-events-auto absolute flex flex-col overflow-hidden border bg-[var(--os-window)] text-[var(--os-text)] backdrop-blur-2xl",
         maximized ? "rounded-[16px]" : "rounded-[18px]",
@@ -141,42 +182,49 @@ export default function DesktopWindow({
       )}
       role="dialog"
       aria-label={title}
+      aria-hidden={win.minimized}
+      inert={win.minimized}
+      tabIndex={-1}
+      data-app-window={app.id}
     >
       {/* Title bar */}
       <div
-        onMouseDown={handleMouseDown}
-        onDoubleClick={() => setMaximized((current) => !current)}
+        onPointerDown={handlePointerDown}
+        onDoubleClick={(event) => {
+          if (!(event.target as HTMLElement).closest("[data-no-drag]")) setMaximized((current) => !current);
+        }}
         className={cn(
-          "flex h-11 shrink-0 select-none items-center justify-between gap-2 border-b border-[color:var(--os-border)] bg-[var(--os-window-head)] px-3",
+          "flex h-12 shrink-0 touch-none select-none items-center justify-between gap-2 border-b border-[color:var(--os-border)] bg-[var(--os-window-head)] px-3",
           maximized ? "cursor-default" : "cursor-grab active:cursor-grabbing"
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5" data-no-drag>
+          <div className="group/controls flex items-center gap-0.5" data-no-drag>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                closeWindow(app.id);
+                dismiss(closeWindow);
               }}
-              aria-label={`Close ${title}`}
-              className="h-3.5 w-3.5 rounded-full bg-[#ff5f57] ring-1 ring-black/20 transition-transform hover:scale-110"
-            />
+              aria-label={`${language === "sr" ? "Zatvori" : "Close"} ${title}`}
+              className="grid h-7 w-7 place-items-center rounded-full hover:bg-[var(--os-control)]"
+            ><span aria-hidden className="grid h-3.5 w-3.5 place-items-center rounded-full bg-[#ff5f57] text-[11px] leading-none text-black/70"><span className="opacity-0 group-hover/controls:opacity-100 group-focus-within/controls:opacity-100">×</span></span></button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                minimizeWindow(app.id);
+                dismiss(minimizeWindow);
               }}
-              aria-label={`Minimize ${title}`}
-              className="h-3.5 w-3.5 rounded-full bg-[#ffbd2e] ring-1 ring-black/20 transition-transform hover:scale-110"
-            />
+              aria-label={`${language === "sr" ? "Minimizuj" : "Minimize"} ${title}`}
+              className="grid h-7 w-7 place-items-center rounded-full hover:bg-[var(--os-control)]"
+            ><span aria-hidden className="grid h-3.5 w-3.5 place-items-center rounded-full bg-[#ffbd2e] text-[11px] leading-none text-black/70"><span className="opacity-0 group-hover/controls:opacity-100 group-focus-within/controls:opacity-100">−</span></span></button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setMaximized((current) => !current);
               }}
-              aria-label={`${maximized ? "Restore" : "Maximize"} ${title}`}
-              className="h-3.5 w-3.5 rounded-full bg-[#28c840] ring-1 ring-black/20 transition-transform hover:scale-110"
-            />
+              aria-label={`${language === "sr" ? (maximized ? "Vrati veličinu" : "Uvećaj") : (maximized ? "Restore" : "Maximize")} ${title}`}
+              aria-pressed={maximized}
+              className="grid h-7 w-7 place-items-center rounded-full hover:bg-[var(--os-control)]"
+            ><span aria-hidden className="grid h-3.5 w-3.5 place-items-center rounded-full bg-[#28c840] text-[10px] leading-none text-black/70"><span className="opacity-0 group-hover/controls:opacity-100 group-focus-within/controls:opacity-100">↗</span></span></button>
           </div>
           <div className="ml-1 flex items-center gap-2 text-[12px] text-[var(--os-muted)]">
             <AppIcon
@@ -194,12 +242,15 @@ export default function DesktopWindow({
 
       {/* Content */}
       <div
+        role={scrolls ? "region" : undefined}
+        aria-label={scrolls ? (language === "sr" ? `Sadržaj: ${title}` : `${title} content`) : undefined}
+        tabIndex={scrolls ? 0 : undefined}
         className={cn(
-          "flex-1",
-          app.id === "finder" ? "overflow-hidden" : "os-scroll overflow-y-auto"
+          "min-h-0 flex-1",
+          scrolls ? "os-scroll overflow-y-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--os-accent)]" : "overflow-hidden"
         )}
       >
-        <div className={cn(app.id === "finder" ? "h-full" : "px-6 py-5")}>
+        <div className={scrolls ? "px-6 py-5" : "h-full"}>
           {children}
         </div>
       </div>

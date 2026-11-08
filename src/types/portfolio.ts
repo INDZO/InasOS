@@ -28,6 +28,11 @@ export type Project = {
   learned: string;
   github: string | null;
   live: string | null;
+  documentation?: string;
+  category?: "web" | "fullstack" | "desktop" | "design";
+  featured?: boolean;
+  role?: string;
+  accent?: string;
 };
 
 export type SkillGroup = {

@@ -1,4 +1,5 @@
 import type { SkillGroup } from "@/types/portfolio";
+import type { Language } from "@/store/useLanguageStore";
 
 export const skillGroups: SkillGroup[] = [
   {
@@ -64,3 +65,33 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
 ];
+
+const srTitles: Record<string, string> = {
+  databases: "Baze podataka",
+  languages: "Programski jezici",
+  tools: "Alati",
+  strengths: "Osnovne veštine",
+};
+
+const srItems: Record<string, string> = {
+  "Responsive Web Design": "Responzivni web dizajn",
+  "Problem solving": "Rešavanje problema",
+  "Logical thinking": "Logičko razmišljanje",
+  "Analytical thinking": "Analitičko razmišljanje",
+  Algorithms: "Algoritmi",
+  Debugging: "Otklanjanje grešaka",
+  Teamwork: "Timski rad",
+  Communication: "Komunikacija",
+  "Time management": "Upravljanje vremenom",
+  "Working under pressure": "Rad pod pritiskom",
+  "Presentation skills": "Prezentacione veštine",
+};
+
+export const localizedSkillGroups: Record<Language, SkillGroup[]> = {
+  en: skillGroups,
+  sr: skillGroups.map((group) => ({
+    ...group,
+    title: srTitles[group.id] ?? group.title,
+    items: group.items.map((item) => srItems[item] ?? item),
+  })),
+};

@@ -20,9 +20,27 @@ export default function BootScreen({ onComplete }: Props) {
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const completedRef = useRef(false);
+  const skipRef = useRef<HTMLButtonElement>(null);
   const language = useLanguageStore((s) => s.language);
   const copy = shellCopy[language];
   const bootLines = copy.bootLines as string[];
+
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    skipRef.current?.focus({ preventScroll: true });
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !completedRef.current) {
+        completedRef.current = true;
+        onComplete();
+      }
+      if (event.key === "Tab") { event.preventDefault(); skipRef.current?.focus(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      requestAnimationFrame(() => { if (previous?.isConnected && document.activeElement === document.body) previous.focus({ preventScroll: true }); });
+    };
+  }, [onComplete]);
 
   useEffect(() => {
     const speed = prefersReducedMotion() ? 0.2 : 1;
@@ -80,7 +98,9 @@ export default function BootScreen({ onComplete }: Props) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--os-bg)]"
-        aria-label="InasOS booting"
+        role="dialog"
+        aria-modal="true"
+        aria-label={language === "sr" ? "Pokretanje InasOS-a" : "Starting InasOS"}
       >
         <div className="boot-wallpaper absolute inset-0" />
         <div className="absolute inset-0 os-noise opacity-35" />
@@ -106,7 +126,7 @@ export default function BootScreen({ onComplete }: Props) {
             </div>
           </motion.div>
 
-          <div className="mx-auto h-1.5 max-w-[280px] overflow-hidden rounded-full border border-[color:var(--os-border)] bg-[var(--os-control)]">
+          <div role="progressbar" aria-label={language === "sr" ? "Pokretanje" : "Starting"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round((step / bootLines.length) * 100)} className="mx-auto h-1.5 max-w-[280px] overflow-hidden rounded-full border border-[color:var(--os-border)] bg-[var(--os-control)]">
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-orange-300 via-orange-400 to-amber-200"
               animate={{
@@ -154,9 +174,10 @@ export default function BootScreen({ onComplete }: Props) {
 
           <div className="mt-10 flex justify-center">
             <button
+              ref={skipRef}
               onClick={handleSkip}
               className="rounded-full border border-[color:var(--os-border)] bg-[var(--os-control)] px-3 py-1.5 text-xs text-[var(--os-muted)] transition-colors hover:bg-[var(--os-control-hover)] hover:text-[var(--os-text)]"
-              aria-label="Skip boot animation"
+              aria-label={language === "sr" ? "Preskoči uvod" : "Skip boot animation"}
             >
               {copy.bootSkip as string}
             </button>

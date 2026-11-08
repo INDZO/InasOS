@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeStorage } from "@/lib/storage";
 import type { AppId, WindowPosition } from "@/types/os";
 
 export type AppearanceTheme = "dark" | "light";
@@ -17,7 +18,6 @@ type DesktopState = {
   setTheme: (theme: AppearanceTheme) => void;
   toggleTheme: () => void;
   setIconPosition: (id: AppId, position: WindowPosition) => void;
-  arrangeIcons: (positions: Record<AppId, WindowPosition>) => void;
   resetDesktopLayout: () => void;
   openContextMenu: (position: WindowPosition) => void;
   closeContextMenu: () => void;
@@ -45,7 +45,6 @@ export const useDesktopStore = create<DesktopState>()(
         set((state) => ({
           iconPositions: { ...state.iconPositions, [id]: position },
         })),
-      arrangeIcons: (positions) => set({ iconPositions: positions }),
       resetDesktopLayout: () => set({ iconPositions: {} }),
       openContextMenu: (position) => set({ contextMenu: position }),
       closeContextMenu: () => set({ contextMenu: null }),
@@ -60,6 +59,8 @@ export const useDesktopStore = create<DesktopState>()(
     }),
     {
       name: "inasos.desktop.v2",
+      storage: safeStorage,
+      skipHydration: true,
       partialize: (state) => ({
         theme: state.theme,
         iconPositions: state.iconPositions,

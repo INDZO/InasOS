@@ -11,13 +11,13 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-orange-500 hover:bg-orange-400 text-white shadow-[0_8px_24px_-12px_rgba(249,115,22,0.6)]",
+    "os-action-primary shadow-[0_8px_24px_-12px_rgba(249,115,22,0.6)]",
   secondary:
     "bg-[var(--os-control)] hover:bg-[var(--os-control-hover)] text-[var(--os-text)] border border-[color:var(--os-border)]",
   ghost:
     "bg-transparent hover:bg-[var(--os-control)] text-[var(--os-text)]",
   danger:
-    "bg-red-500/90 hover:bg-red-500 text-white",
+    "bg-red-800 text-white hover:bg-red-700",
 };
 
 const SIZES: Record<Size, string> = {

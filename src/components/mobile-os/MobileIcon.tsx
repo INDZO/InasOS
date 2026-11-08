@@ -13,7 +13,7 @@ export default function MobileIcon({ app }: { app: AppDefinition }) {
   return (
     <button
       onClick={() => openApp(app.id)}
-      aria-label={`Open mobile app ${title}`}
+      aria-label={`${language === "sr" ? "Otvori aplikaciju" : "Open mobile app"} ${title}`}
       className="group flex min-w-0 flex-col items-center gap-1.5 active:opacity-80"
     >
       <span className="grid h-[62px] w-[62px] place-items-center rounded-[18px] border border-[color:var(--os-border)] bg-gradient-to-br from-white/[0.22] via-white/[0.08] to-white/[0.02] text-[color:var(--os-accent)] shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_12px_26px_-16px_rgba(0,0,0,0.6)] transition-transform group-active:scale-95">

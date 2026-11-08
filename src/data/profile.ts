@@ -2,17 +2,17 @@ import type { Achievement, Education, Profile } from "@/types/portfolio";
 
 export const profile: Profile = {
   name: "Inas Hamzagić",
-  role: "Software Engineering Student",
+  role: "Software Engineering Student · Full-stack Development",
   tagline:
-    "Software Engineering student focused on web development, software development, algorithms and problem-solving.",
-  bio: "I am a third-year Software Engineering student at the State University of Novi Pazar. I am interested in software development, web development, algorithms, databases and practical problem-solving. I enjoy building real projects, learning through implementation and improving my skills through teamwork, hackathons and hands-on development.",
+    "From the interface to the database. I build practical web applications and learn by bringing ideas to life.",
+  bio: "I’m Inas, a Software Engineering student at the State University of Novi Pazar. I build web applications with React, Next.js, ASP.NET Core and Laravel, connecting thoughtful interfaces with APIs and databases. My projects span service management, learning tools and interactive experiences. I enjoy solving problems with a team, and I’m looking for an internship or junior role where I can contribute and keep growing.",
   focus:
-    "Currently building full-stack web projects, sharpening algorithms and data structures, and exploring modern frontend and backend stacks.",
+    "Full-stack web development, algorithms and data structures, relational databases, and deploying applications on Linux.",
   status:
     "Open to internships, junior developer opportunities and collaboration.",
   email: "hamzagicinas@gmail.com",
   github: "https://github.com/INDZO",
-  linkedin: null,
+  linkedin: "https://www.linkedin.com/in/hamzagicinas/",
 };
 
 export const education: Education[] = [

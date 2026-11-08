@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { create } from "zustand";
 import {
   ChevronLeft,
   FileText,
@@ -15,11 +16,26 @@ import { Button } from "@/components/ui/Button";
 import { appById } from "@/data/apps";
 import { localizedProfile, localizedProjects } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
-import { useWindowStore } from "@/store/useWindowStore";
+import { navigatePortfolio } from "@/lib/navigation";
+import { normalizeSearch, searchTokens } from "@/lib/search";
 import { cn } from "@/lib/cn";
 
 type FolderId = "home" | "profile" | "projects" | "system";
 type ViewMode = "grid" | "list";
+type FinderState = {
+  folder: FolderId;
+  selectedId: string;
+  view: ViewMode | null;
+  query: string;
+};
+
+const useFinder = create<FinderState>(() => ({
+  folder: "home",
+  selectedId: "profile-folder",
+  view: null,
+  query: "",
+}));
+
 
 type FinderItem = {
   id: string;
@@ -27,17 +43,16 @@ type FinderItem = {
   kind: "folder" | "app" | "file";
   folder?: FolderId;
   appId?: AppId;
+  projectId?: string;
   description: string;
   meta?: string;
 };
 
-export default function FinderApp() {
+export default function FinderApp({ surface = "desktop" }: { surface?: "desktop" | "mobile" }) {
   const language = useLanguageStore((s) => s.language);
-  const openWindow = useWindowStore((s) => s.openWindow);
-  const [folder, setFolder] = useState<FolderId>("home");
-  const [selectedId, setSelectedId] = useState<string>("about-file");
-  const [view, setView] = useState<ViewMode>("grid");
-  const [query, setQuery] = useState("");
+  const mobile = surface === "mobile";
+  const { folder, selectedId, view: preferredView, query } = useFinder();
+  const view = preferredView ?? (mobile ? "list" : "grid");
 
   const profile = localizedProfile[language];
   const projects = localizedProjects[language];
@@ -51,10 +66,11 @@ export default function FinderApp() {
           kind: "Tip",
           empty: "Nema rezultata za ovu pretragu.",
           folders: "Lokacije",
-          home: "Home",
-          profile: "Profile",
-          projects: "Projects",
-          system: "System",
+          home: "Početna",
+          profile: "Profil",
+          projects: "Projekti",
+          system: "Sistem",
+          hint: "Dvoklik ili Enter otvara izabranu stavku.",
         }
       : {
           search: "Search files",
@@ -67,6 +83,7 @@ export default function FinderApp() {
           profile: "Profile",
           projects: "Projects",
           system: "System",
+          hint: "Double-click or press Enter to open the selected item.",
         };
 
   const folders = useMemo<Record<FolderId, FinderItem[]>>(
@@ -89,7 +106,7 @@ export default function FinderApp() {
             language === "sr"
               ? "Studentski projekti, hackathoni i full-stack radovi."
               : "Student projects, hackathons and full-stack work.",
-          meta: `${projects.length} items`,
+          meta: `${projects.length} ${language === "sr" ? "projekata" : "projects"}`,
         },
         {
           id: "cv-file",
@@ -98,8 +115,8 @@ export default function FinderApp() {
           appId: "cv",
           description:
             language === "sr"
-              ? "CV fajl sa download i preview opcijama."
-              : "CV file with preview and download actions.",
+              ? "Radna verzija CV-ja za pregled i preuzimanje."
+              : "Draft CV available to preview and download.",
           meta: "PDF",
         },
         {
@@ -159,8 +176,9 @@ export default function FinderApp() {
         name: `${project.name}.project`,
         kind: "file",
         appId: "projects",
+        projectId: project.id,
         description: project.description,
-        meta: project.tech.slice(0, 3).join(", "),
+        meta: project.tech.join(", "),
       })),
       system: [
         {
@@ -212,86 +230,85 @@ export default function FinderApp() {
     [copy.profile, copy.projects, language, profile, projects]
   );
 
-  const allItems = Object.values(folders).flat();
-  const visibleItems = (query ? allItems : folders[folder]).filter((item) =>
-    `${item.name} ${item.description} ${item.meta ?? ""}`
-      .toLowerCase()
-      .includes(query.toLowerCase())
-  );
+  const tokens = searchTokens(query);
+  const searching = tokens.length > 0;
+  const visibleItems = searching
+    ? Object.values(folders).flat().filter((item) => {
+        const text = normalizeSearch(`${item.name} ${item.description} ${item.meta ?? ""}`);
+        return tokens.every((token) => text.includes(token));
+      })
+    : folders[folder];
   const selected =
     visibleItems.find((item) => item.id === selectedId) ?? visibleItems[0];
+
+  const openFolder = (id: FolderId) =>
+    useFinder.setState({ folder: id, selectedId: folders[id][0]?.id ?? "", query: "" });
 
   const openItem = (item: FinderItem | undefined) => {
     if (!item) return;
     if (item.folder) {
-      setFolder(item.folder);
-      setSelectedId(folders[item.folder][0]?.id ?? item.id);
-      setQuery("");
+      openFolder(item.folder);
       return;
     }
-    if (item.appId) openWindow(item.appId);
+    if (item.appId) navigatePortfolio(item.appId, item.projectId);
   };
 
   return (
-    <div className="flex h-full min-h-[420px] overflow-hidden bg-[var(--os-window)]">
-      <aside className="w-44 shrink-0 border-r border-[color:var(--os-border)] bg-[var(--os-control)] p-3">
-        <div className="mb-3 text-[10.5px] uppercase tracking-[0.18em] text-[var(--os-muted)]">
+    <div className={cn("flex bg-[var(--os-window)]", mobile ? "min-h-full flex-col rounded-2xl" : "h-full min-h-0 overflow-hidden")}>
+      <nav aria-label={copy.folders} className={cn("shrink-0 bg-[var(--os-control)] p-3", mobile ? "flex flex-wrap gap-1 rounded-t-2xl border-b border-[color:var(--os-border)]" : "w-40 border-r border-[color:var(--os-border)]")}>
+        <div className={cn("mb-3 text-[10.5px] uppercase tracking-[0.18em] text-[var(--os-muted)]", mobile && "sr-only")}>
           {copy.folders}
         </div>
         {(["home", "profile", "projects", "system"] as FolderId[]).map((id) => (
           <button
             key={id}
             type="button"
-            onClick={() => {
-              setFolder(id);
-              setSelectedId(folders[id][0]?.id ?? "");
-              setQuery("");
-            }}
+            onClick={() => openFolder(id)}
             className={cn(
-              "mb-1 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-[13px] transition-colors",
-              folder === id && !query
+              "flex items-center gap-2 rounded-lg px-2.5 text-left text-[13px] transition-colors",
+              mobile ? "min-h-11" : "mb-1 w-full py-2",
+              folder === id && !searching
                 ? "bg-[var(--os-control-hover)] text-[var(--os-text)]"
                 : "text-[var(--os-muted)] hover:bg-[var(--os-control-hover)] hover:text-[var(--os-text)]"
             )}
+            aria-current={folder === id && !searching ? "location" : undefined}
           >
             <Folder className="h-4 w-4 text-[color:var(--os-accent)]" />
             {copy[id]}
           </button>
         ))}
-      </aside>
+      </nav>
 
       <section className="flex min-w-0 flex-1 flex-col">
-        <div className="flex h-11 shrink-0 items-center gap-2 border-b border-[color:var(--os-border)] bg-[var(--os-window-head)] px-3">
+        <div className={cn("flex shrink-0 items-center gap-2 border-b border-[color:var(--os-border)] bg-[var(--os-window-head)] px-3", mobile ? "flex-wrap py-2" : "h-12")}>
           <button
             type="button"
-            onClick={() => {
-              setFolder("home");
-              setSelectedId("profile-folder");
-              setQuery("");
-            }}
+            onClick={() => searching ? useFinder.setState({ query: "" }) : openFolder("home")}
             disabled={folder === "home" && !query}
-            className="grid h-7 w-7 place-items-center rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] text-[var(--os-muted)] disabled:opacity-45"
-            aria-label="Back to Home"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] text-[var(--os-muted)] disabled:opacity-45"
+            aria-label={language === "sr" ? "Nazad na početnu" : "Back to Home"}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
           <div className="min-w-0 flex-1 rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] px-3 py-1.5 text-[12px] text-[var(--os-muted)]">
-            InasOS / {query ? "Search" : copy[folder]}
+            InasOS / {searching ? (language === "sr" ? "Pretraga" : "Search") : copy[folder]}
           </div>
-          <div className="relative hidden w-52 sm:block">
+          <div className={cn("relative", mobile ? "order-last w-full" : "w-44")}>
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--os-muted)]" />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => useFinder.setState({ query: e.target.value })}
               placeholder={copy.search}
-              className="h-7 w-full rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] pl-8 pr-2 text-[12px] text-[var(--os-text)] outline-none placeholder:text-[var(--os-muted)]"
+              aria-label={copy.search}
+              type="search"
+              className={cn("h-10 w-full rounded-lg border border-[color:var(--os-border)] bg-[var(--os-control)] pl-8 pr-2 text-[var(--os-text)] outline-none placeholder:text-[var(--os-muted)]", mobile ? "text-base" : "text-sm")}
             />
           </div>
           <button
             type="button"
-            onClick={() => setView(view === "grid" ? "list" : "grid")}
-            className="grid h-7 w-7 place-items-center rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] text-[var(--os-muted)]"
-            aria-label={view === "grid" ? "Switch to list view" : "Switch to grid view"}
+            onClick={() => useFinder.setState({ view: view === "grid" ? "list" : "grid" })}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-[color:var(--os-border)] bg-[var(--os-control)] text-[var(--os-muted)]"
+            aria-label={language === "sr" ? (view === "grid" ? "Prikaži listu" : "Prikaži mrežu") : (view === "grid" ? "Switch to list view" : "Switch to grid view")}
           >
             {view === "grid" ? <List className="h-4 w-4" /> : <Grid3X3 className="h-4 w-4" />}
           </button>
@@ -307,7 +324,7 @@ export default function FinderApp() {
               <div
                 className={cn(
                   view === "grid"
-                    ? "grid grid-cols-2 gap-2 md:grid-cols-3"
+                    ? "grid grid-cols-2 gap-2"
                     : "space-y-1"
                 )}
               >
@@ -315,13 +332,15 @@ export default function FinderApp() {
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setSelectedId(item.id)}
-                    onDoubleClick={() => openItem(item)}
+                    onClick={() => { useFinder.setState({ selectedId: item.id }); if (mobile) openItem(item); }}
+                    onDoubleClick={() => { if (!mobile) openItem(item); }}
+                    onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); openItem(item); } }}
+                    aria-pressed={mobile ? undefined : selected?.id === item.id}
                     className={cn(
                       "group text-left transition-colors",
                       view === "grid"
                         ? "rounded-lg border border-transparent p-2.5 hover:bg-[var(--os-control)]"
-                        : "flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-[var(--os-control)]",
+                        : "flex min-h-14 w-full items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-[var(--os-control)]",
                       selected?.id === item.id &&
                         "bg-[var(--os-selection)] ring-1 ring-sky-500/30"
                     )}
@@ -341,7 +360,7 @@ export default function FinderApp() {
             )}
           </div>
 
-          <aside className="hidden w-64 shrink-0 border-l border-[color:var(--os-border)] bg-[var(--os-control)] p-4 md:block">
+          {!mobile && <aside className="os-scroll w-56 shrink-0 overflow-y-auto border-l border-[color:var(--os-border)] bg-[var(--os-control)] p-4">
             {selected && (
               <div className="flex h-full flex-col">
                 <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl border border-[color:var(--os-border)] bg-gradient-to-br from-white/[0.22] via-white/[0.08] to-white/[0.02] text-[color:var(--os-accent)]">
@@ -369,7 +388,7 @@ export default function FinderApp() {
                   {selected.description}
                 </p>
                 <Button
-                  className="mt-auto"
+                  className="mt-5 w-full"
                   size="sm"
                   variant="secondary"
                   onClick={() => openItem(selected)}
@@ -377,9 +396,10 @@ export default function FinderApp() {
                 >
                   {copy.open}
                 </Button>
+                <p className="mt-2 text-xs text-[var(--os-muted)]">{copy.hint}</p>
               </div>
             )}
-          </aside>
+          </aside>}
         </div>
       </section>
     </div>

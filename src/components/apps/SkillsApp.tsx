@@ -1,6 +1,6 @@
 "use client";
 
-import { skillGroups } from "@/data/skills";
+import { localizedSkillGroups } from "@/data/skills";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardSubtitle, CardTitle } from "@/components/ui/Card";
 import { localizedProfile } from "@/data/i18n";
@@ -73,7 +73,7 @@ export default function SkillsApp() {
       </Card>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {skillGroups.map((group) => (
+        {localizedSkillGroups[language].map((group) => (
           <Card key={group.id}>
             <CardSubtitle>{group.title}</CardSubtitle>
             <div className="mt-2 flex flex-wrap gap-1.5">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, Mail, Check } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/BrandIcons";
 import { localizedProfile } from "@/data/i18n";
@@ -9,7 +9,10 @@ import { Card, CardSubtitle, CardTitle } from "@/components/ui/Card";
 import { AppHeader } from "./AppHeader";
 
 export default function ContactApp() {
-  const [copied, setCopied] = useState(false);
+  const [feedback, setFeedback] = useState<"idle" | "copied" | "error">("idle");
+  const resetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (resetRef.current) clearTimeout(resetRef.current); }, []);
+  const copied = feedback === "copied";
   const language = useLanguageStore((s) => s.language);
   const profile = localizedProfile[language];
   const copy =
@@ -22,6 +25,7 @@ export default function ContactApp() {
           copy: "Kopiraj email",
           copied: "Kopirano",
           elsewhere: "Profili",
+          error: "Kopiranje nije uspelo. Označi email adresu i kopiraj je, ili koristi dugme za slanje emaila.",
         }
       : {
           eyebrow: "InasOS · Contact",
@@ -31,6 +35,7 @@ export default function ContactApp() {
           copy: "Copy email",
           copied: "Copied",
           elsewhere: "Elsewhere",
+          error: "Could not copy. Select the email address to copy it, or use the email button.",
         };
 
   const copyEmail = async () => {
@@ -45,13 +50,16 @@ export default function ContactApp() {
         ta.style.left = "-9999px";
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand("copy");
+        const success = document.execCommand("copy");
         document.body.removeChild(ta);
+        if (!success) throw new Error("Copy unavailable");
       }
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      setFeedback("copied");
+      if (resetRef.current) clearTimeout(resetRef.current);
+      resetRef.current = setTimeout(() => setFeedback("idle"), 2500);
     } catch {
-      // mailto remains available if clipboard access is blocked
+      if (resetRef.current) clearTimeout(resetRef.current);
+      setFeedback("error");
     }
   };
 
@@ -68,15 +76,15 @@ export default function ContactApp() {
           <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[color:var(--os-border)] bg-[var(--os-control)] text-[color:var(--os-accent)]">
             <Mail className="h-5 w-5" />
           </div>
-          <div>
-            <CardTitle>{profile.email}</CardTitle>
-            <p className="text-[12px] text-zinc-500">{copy.best}</p>
+          <div className="min-w-0">
+            <CardTitle className="select-text break-all">{profile.email}</CardTitle>
+            <p className="text-[12px] text-[var(--os-muted)]">{copy.best}</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <a
-            href={`mailto:${profile.email}`}
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-[13px] font-medium text-white hover:bg-orange-400"
+            href={`mailto:${profile.email}?subject=${encodeURIComponent(language === "sr" ? "Kontakt preko portfolija" : "Let's work together")}`}
+            className="os-action os-action-primary"
           >
             <Mail className="h-4 w-4" />
             {copy.send}
@@ -84,11 +92,11 @@ export default function ContactApp() {
           <button
             type="button"
             onClick={copyEmail}
-            className="inline-flex items-center gap-2 rounded-lg border border-[color:var(--os-border)] bg-[var(--os-control)] px-4 py-2 text-[13px] font-medium text-[var(--os-text)] hover:bg-[var(--os-control-hover)]"
+            className="os-action"
           >
             {copied ? (
               <>
-                <Check className="h-4 w-4 text-emerald-400" />
+                <Check className="h-4 w-4 text-[var(--os-success)]" />
                 {copy.copied}
               </>
             ) : (
@@ -99,6 +107,9 @@ export default function ContactApp() {
             )}
           </button>
         </div>
+        <p role="status" aria-live="polite" className={feedback === "error" ? "text-sm text-[var(--os-muted)]" : "sr-only"}>
+          {feedback === "copied" ? copy.copied : feedback === "error" ? copy.error : ""}
+        </p>
       </Card>
 
       {(profile.github || profile.linkedin) && (

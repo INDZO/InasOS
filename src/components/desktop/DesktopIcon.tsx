@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AppDefinition } from "@/types/os";
 import { AppIcon } from "@/components/AppIcon";
 import { useWindowStore } from "@/store/useWindowStore";
@@ -13,27 +13,28 @@ import type { WindowPosition } from "@/types/os";
 type Props = {
   app: AppDefinition;
   position: WindowPosition;
+  customPosition?: WindowPosition;
+  viewport: { width: number; height: number };
   className?: string;
 };
 
 const ICON_W = 92;
-const ICON_H = 82;
+const ICON_H = 94;
 const TOP_SAFE_AREA = 48;
 const EDGE = 12;
 const DRAG_THRESHOLD = 5;
 
-function clampIcon(position: WindowPosition): WindowPosition {
-  if (typeof window === "undefined") return position;
+function clampIcon(position: WindowPosition, viewport: Props["viewport"]): WindowPosition {
   return {
-    x: Math.min(Math.max(EDGE, position.x), window.innerWidth - ICON_W - EDGE),
+    x: Math.min(Math.max(EDGE, position.x), viewport.width - ICON_W - EDGE),
     y: Math.min(
       Math.max(TOP_SAFE_AREA, position.y),
-      window.innerHeight - ICON_H - 82
+      viewport.height - ICON_H - 82
     ),
   };
 }
 
-export default function DesktopIcon({ app, position, className }: Props) {
+export default function DesktopIcon({ app, position, customPosition, viewport, className }: Props) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const isOpen = useWindowStore((s) => Boolean(s.windows[app.id]));
   const setIconPosition = useDesktopStore((s) => s.setIconPosition);
@@ -41,6 +42,8 @@ export default function DesktopIcon({ app, position, className }: Props) {
   const title = appName(app.id, language);
   const [dragPosition, setDragPosition] = useState<WindowPosition | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const cleanupRef = useRef<(() => void) | null>(null);
+  useEffect(() => () => cleanupRef.current?.(), []);
   const positionRef = useRef(position);
   const dragRef = useRef({
     dragging: false,
@@ -51,12 +54,16 @@ export default function DesktopIcon({ app, position, className }: Props) {
   });
 
   const open = () => openWindow(app.id);
-  const displayPosition = dragPosition ?? position;
+  const customFits = customPosition
+    && customPosition.x + ICON_W + EDGE <= viewport.width
+    && customPosition.y + ICON_H + 82 <= viewport.height;
+  const displayPosition = dragPosition ?? clampIcon(customFits ? customPosition : position, viewport);
 
   const beginDrag = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (e.button !== 0) return;
+    cleanupRef.current?.();
     e.preventDefault();
-    const origin = clampIcon(displayPosition);
+    const origin = clampIcon(displayPosition, viewport);
 
     const start = {
       dragging: false,
@@ -79,7 +86,7 @@ export default function DesktopIcon({ app, position, className }: Props) {
       const next = clampIcon({
         x: start.originX + dx,
         y: start.originY + dy,
-      });
+      }, viewport);
       if (dragging && !dragRef.current.dragging) {
         setIsDragging(true);
       }
@@ -88,40 +95,47 @@ export default function DesktopIcon({ app, position, className }: Props) {
       setDragPosition(next);
     };
 
-    const onUp = () => {
+    const cleanup = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onCancel);
+      cleanupRef.current = null;
+    };
+    const onCancel = () => {
+      cleanup();
+      setDragPosition(null);
+      setIsDragging(false);
+    };
+    const onUp = () => {
+      cleanup();
       if (dragRef.current.dragging) {
         setIconPosition(app.id, positionRef.current);
-        setDragPosition(null);
-        setIsDragging(false);
       } else {
         open();
       }
+      setDragPosition(null);
+      setIsDragging(false);
     };
 
+    cleanupRef.current = cleanup;
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp, { once: true });
+    window.addEventListener("pointercancel", onCancel, { once: true });
   };
 
   return (
     <button
       type="button"
       onPointerDown={beginDrag}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open();
-        }
-      }}
+      onClick={(event) => { if (event.detail === 0) open(); }}
       style={{ left: displayPosition.x, top: displayPosition.y }}
       className={cn(
         "group absolute z-20 flex w-[92px] touch-none select-none flex-col items-center gap-1.5 rounded-2xl p-2 text-center transition-colors",
         "cursor-default hover:bg-[var(--os-control)] focus:outline-none focus-visible:bg-[var(--os-control-hover)] active:cursor-grabbing",
         className
       )}
-      aria-label={`Open desktop app ${title}`}
-      aria-grabbed={isDragging}
+      aria-label={`${language === "sr" ? "Otvori" : "Open desktop app"} ${title}`}
+      data-dragging={isDragging || undefined}
     >
       <span
         className={cn(

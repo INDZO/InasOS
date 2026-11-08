@@ -1,33 +1,36 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Grid3X3, Moon, RotateCcw, Sun } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, FolderOpen, FileDown, Grid3X3, Mail, Moon, RotateCcw, Sun } from "lucide-react";
+import { GithubIcon } from "@/components/BrandIcons";
+import { localizedProjects } from "@/data/i18n";
 import { desktopApps } from "@/data/apps";
+import { cvPath, portfolioViews } from "@/data/portfolio-views";
 import OSWallpaper from "@/components/OSWallpaper";
+import { PortfolioViewSwitch } from "@/components/PortfolioViewSwitch";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import DesktopIcon from "./DesktopIcon";
 import WindowManager from "./WindowManager";
-import MinimizedTray from "./MinimizedTray";
 import StartLauncher from "./StartLauncher";
 import { useWindowStore } from "@/store/useWindowStore";
 import { localizedProfile, shellCopy } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { InasLogo } from "@/components/InasLogo";
 import { useDesktopStore } from "@/store/useDesktopStore";
+import { navigatePortfolio } from "@/lib/navigation";
 import type { AppId, WindowPosition } from "@/types/os";
 
 const ICON_STEP_X = 104;
-const ICON_STEP_Y = 88;
-const ICONS_PER_ROW = 2;
+const ICON_STEP_Y = 94;
 
-function defaultIconPositions(width: number): Record<AppId, WindowPosition> {
-  const startX = Math.max(24, width - 220);
+function defaultIconPositions(width: number, columns: number): Record<AppId, WindowPosition> {
+  const startX = width - columns * ICON_STEP_X - 12;
   return desktopApps.reduce(
     (positions, app, index) => {
       positions[app.id] = {
-        x: startX + (index % ICONS_PER_ROW) * ICON_STEP_X,
-        y: 64 + Math.floor(index / ICONS_PER_ROW) * ICON_STEP_Y,
+        x: startX + (index % columns) * ICON_STEP_X,
+        y: 54 + Math.floor(index / columns) * ICON_STEP_Y,
       };
       return positions;
     },
@@ -42,27 +45,28 @@ export default function DesktopOS() {
   const language = useLanguageStore((s) => s.language);
   const profile = localizedProfile[language];
   const copy = shellCopy[language];
+  const isSerbian = language === "sr";
+  const featured = localizedProjects[language].filter((project) => project.featured && project.id !== "inasos").slice(0, 3);
   const iconPositions = useDesktopStore((s) => s.iconPositions);
-  const arrangeIcons = useDesktopStore((s) => s.arrangeIcons);
   const resetDesktopLayout = useDesktopStore((s) => s.resetDesktopLayout);
   const contextMenu = useDesktopStore((s) => s.contextMenu);
   const openContextMenu = useDesktopStore((s) => s.openContextMenu);
   const closeContextMenu = useDesktopStore((s) => s.closeContextMenu);
   const theme = useDesktopStore((s) => s.theme);
   const toggleTheme = useDesktopStore((s) => s.toggleTheme);
+  const launcherOpen = useDesktopStore((s) => s.launcherOpen);
   const openLauncher = useDesktopStore((s) => s.openLauncher);
+  const closeLauncher = useDesktopStore((s) => s.closeLauncher);
   const closeMenus = useDesktopStore((s) => s.closeMenus);
-  const [viewportWidth, setViewportWidth] = useState(1280);
-  const [viewportHeight, setViewportHeight] = useState(800);
-  const arrangedPositions = useMemo(
-    () => defaultIconPositions(viewportWidth),
-    [viewportWidth]
-  );
+  const launcherReturnFocus = useRef<HTMLElement | null>(null);
+  const [{ width: viewportWidth, height: viewportHeight }, setViewport] = useState({ width: 1280, height: 800 });
+  const rows = 1 + Math.max(0, Math.floor((viewportHeight - 54 - 94 - 82) / ICON_STEP_Y));
+  const columns = Math.max(2, Math.ceil(desktopApps.length / rows));
+  const arrangedPositions = defaultIconPositions(viewportWidth, columns);
 
   useEffect(() => {
     const syncViewport = () => {
-      setViewportWidth(window.innerWidth);
-      setViewportHeight(window.innerHeight);
+      setViewport({ width: window.innerWidth, height: window.innerHeight });
     };
     syncViewport();
     window.addEventListener("resize", syncViewport);
@@ -70,8 +74,13 @@ export default function DesktopOS() {
   }, []);
 
   const openWindow = useWindowStore((s) => s.openWindow);
+  useEffect(() => () => {
+    if (useDesktopStore.getState().launcherOpen) closeLauncher();
+  }, [closeLauncher]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && contextMenu) closeContextMenu();
       const target = e.target as HTMLElement | null;
       if (
         target &&
@@ -81,16 +90,7 @@ export default function DesktopOS() {
       ) {
         return;
       }
-      if (e.key === "t" && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        e.preventDefault();
-        openWindow("terminal");
-      } else if (e.key === "a" && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        e.preventDefault();
-        openWindow("about");
-      } else if (e.key === "p" && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        e.preventDefault();
-        openWindow("projects");
-      } else if (
+      if (
         e.key.toLowerCase() === " " &&
         (e.metaKey || e.ctrlKey) &&
         !e.altKey
@@ -101,12 +101,12 @@ export default function DesktopOS() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openLauncher, openWindow]);
+  }, [closeContextMenu, contextMenu, openLauncher]);
 
   const menuCopy =
     language === "sr"
       ? {
-          arrange: "Slozi ikonice",
+          arrange: "Složi ikonice",
           reset: "Resetuj desktop",
           theme: theme === "light" ? "Tamna tema" : "Svetla tema",
         }
@@ -129,9 +129,13 @@ export default function DesktopOS() {
     openContextMenu({ x: e.clientX, y: e.clientY });
   };
 
-  return (
+  const workspace = (
     <div
-      className="relative h-full w-full overflow-hidden"
+      className="absolute inset-0"
+      inert={launcherOpen}
+      onFocusCapture={(event) => {
+        if (event.target instanceof HTMLElement) launcherReturnFocus.current = event.target;
+      }}
       onContextMenu={handleDesktopContextMenu}
       onMouseDown={() => {
         closeContextMenu();
@@ -140,56 +144,64 @@ export default function DesktopOS() {
     >
       <OSWallpaper />
       <TopBar
-        onArrangeIcons={() => arrangeIcons(arrangedPositions)}
+        onArrangeIcons={resetDesktopLayout}
         onResetDesktop={resetDesktopLayout}
       />
+
+      <section
+        className={`desktop-welcome ${hasOpenWindows ? "pointer-events-none opacity-0" : "opacity-100"}`}
+        aria-hidden={hasOpenWindows}
+        inert={hasOpenWindows}
+        style={{ maxWidth: `calc(100% - ${columns * ICON_STEP_X + 24}px - clamp(1.5rem, 6vw, 7rem))` }}
+        aria-label={isSerbian ? "Portfolio" : "Portfolio welcome"}
+      >
+        <div className="flex items-center gap-3">
+          <InasLogo showWordmark={false} markClassName="size-10 rounded-xl" />
+          <div>
+            <p className="os-kicker">InasOS</p>
+            <p className="mt-0.5 text-xs text-[var(--os-muted)]">{isSerbian ? "Portfolio · Novi Pazar, Srbija" : "Portfolio · Novi Pazar, Serbia"}</p>
+          </div>
+        </div>
+        <h1 className="mt-5 text-[clamp(2.5rem,5vw,4.75rem)] font-semibold leading-[0.96] tracking-[-0.065em]">{profile.name}</h1>
+        <p className="mt-3 text-sm font-medium text-[var(--os-text)] sm:text-base">{profile.role}</p>
+        <p className="mt-3 max-w-lg text-sm leading-6 text-[var(--os-muted)] sm:text-base">{profile.tagline}</p>
+        <div className="mt-4"><PortfolioViewSwitch language={language} view="interactive" /></div>
+        <nav className="mt-5 flex flex-wrap gap-2" aria-label={isSerbian ? "Brze veze" : "Portfolio shortcuts"}>
+          <button type="button" className="os-action os-action-primary" onClick={() => navigatePortfolio("projects")}>
+            <FolderOpen size={17} aria-hidden="true" /> {String(copy.projects)}
+          </button>
+          <a className="os-action" href={cvPath} aria-label={portfolioViews[language].draftCv} download><FileDown size={16} aria-hidden="true" /> {isSerbian ? "Radna verzija CV-ja" : "Draft CV"}</a>
+          <button type="button" className="os-action" onClick={() => openWindow("contact")}><Mail size={16} aria-hidden="true" />{isSerbian ? "Kontakt" : "Contact"}</button>
+          {profile.github && <a className="os-action" href={profile.github} target="_blank" rel="noreferrer"><GithubIcon className="size-4" /> GitHub</a>}
+        </nav>
+        <div className="desktop-featured mt-6 border-t border-[var(--os-border)] pt-4">
+          <p className="os-kicker">{isSerbian ? "Odabrani radovi" : "Selected work"}</p>
+          <ul className="mt-2 grid gap-2 sm:grid-cols-3">
+            {featured.map((item) => (
+              <li key={item.id}>
+                <a className="desktop-project-link" href={`#projects/${item.id}`} onClick={(event) => {
+                  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                  event.preventDefault();
+                  navigatePortfolio("projects", item.id);
+                }}>
+                  <span className="min-w-0"><span className="block text-sm leading-tight font-semibold">{item.name}</span><span className="mt-1 block truncate text-xs text-[var(--os-muted)]">{item.tech.slice(0, 2).join(" · ")}</span></span>
+                  <ArrowUpRight size={14} className="shrink-0 text-[var(--os-muted)]" aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {desktopApps.map((app) => (
         <DesktopIcon
           key={app.id}
           app={app}
-          position={iconPositions[app.id] ?? arrangedPositions[app.id]}
+          position={arrangedPositions[app.id]}
+          customPosition={iconPositions[app.id]}
+          viewport={{ width: viewportWidth, height: viewportHeight }}
         />
       ))}
-
-      <div
-        className={`pointer-events-none absolute left-8 top-20 z-10 max-w-[460px] transition-opacity duration-300 ${
-          hasOpenWindows ? "opacity-0" : "opacity-100"
-        }`}
-        aria-hidden={hasOpenWindows}
-      >
-        <div className="mb-5">
-          <InasLogo markClassName="h-14 w-14 rounded-[16px]" />
-        </div>
-        <div className="terminal-font text-[10.5px] uppercase tracking-[0.28em] text-[color:var(--os-accent)]">
-          {"// developer workstation"}
-        </div>
-        <h1 className="mt-3 text-[48px] font-semibold leading-[1.02] tracking-tight text-[var(--os-text)]">
-          {profile.name}
-        </h1>
-        <p className="mt-1 text-[14px] text-[var(--os-muted)]">{profile.role}</p>
-        <p className="mt-4 max-w-[440px] text-[13.5px] leading-6 text-[var(--os-text)]">
-          {profile.tagline}
-        </p>
-
-        <div className="pointer-events-auto mt-6 inline-flex items-center gap-3 rounded-xl border border-[color:var(--os-border)] bg-[var(--os-panel)] px-3 py-2 text-[11.5px] text-[var(--os-muted)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
-          <span>{copy.shortcuts as string}</span>
-          <kbd className="rounded border border-[color:var(--os-border)] bg-[var(--os-control)] px-1.5 py-0.5 terminal-font text-[10.5px] text-[var(--os-text)]">
-            T
-          </kbd>
-          <span className="text-[var(--os-muted)]">{copy.terminal as string}</span>
-          <span className="text-[var(--os-subtle)]">·</span>
-          <kbd className="rounded border border-[color:var(--os-border)] bg-[var(--os-control)] px-1.5 py-0.5 terminal-font text-[10.5px] text-[var(--os-text)]">
-            P
-          </kbd>
-          <span className="text-[var(--os-muted)]">{copy.projects as string}</span>
-          <span className="text-[var(--os-subtle)]">·</span>
-          <kbd className="rounded border border-[color:var(--os-border)] bg-[var(--os-control)] px-1.5 py-0.5 terminal-font text-[10.5px] text-[var(--os-text)]">
-            A
-          </kbd>
-          <span className="text-[var(--os-muted)]">{copy.about as string}</span>
-        </div>
-      </div>
 
       {contextMenu && (
         <div
@@ -204,7 +216,7 @@ export default function DesktopOS() {
             icon={<Grid3X3 className="h-3.5 w-3.5" />}
             label={menuCopy.arrange}
             onClick={() => {
-              arrangeIcons(arrangedPositions);
+              resetDesktopLayout();
               closeContextMenu();
             }}
           />
@@ -234,9 +246,14 @@ export default function DesktopOS() {
       )}
 
       <WindowManager />
-      <MinimizedTray />
       <Dock />
-      <StartLauncher />
+    </div>
+  );
+
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      {workspace}
+      <StartLauncher returnFocus={launcherReturnFocus} />
     </div>
   );
 }

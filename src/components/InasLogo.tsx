@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { useId } from "react";
 
 type Props = {
   className?: string;
@@ -9,6 +10,7 @@ type Props = {
 
 /** InasOS mark: a laptop with the "IH" monogram on its screen. */
 export function LaptopMark({ className }: { className?: string }) {
+  const id = useId();
   return (
     <svg
       viewBox="0 0 64 64"
@@ -17,22 +19,22 @@ export function LaptopMark({ className }: { className?: string }) {
       aria-label="InasOS logo"
     >
       <defs>
-        <linearGradient id="inas-bg" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#1b2638" />
           <stop offset="1" stopColor="#0a0f1a" />
         </linearGradient>
-        <radialGradient id="inas-glow" cx="0.74" cy="0.22" r="0.7">
+        <radialGradient id={`${id}-glow`} cx="0.74" cy="0.22" r="0.7">
           <stop offset="0" stopColor="#f97316" stopOpacity="0.55" />
           <stop offset="1" stopColor="#f97316" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="inas-mono" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${id}-mono`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#fdba74" />
           <stop offset="1" stopColor="#f97316" />
         </linearGradient>
       </defs>
 
-      <rect width="64" height="64" rx="14" fill="url(#inas-bg)" />
-      <rect width="64" height="64" rx="14" fill="url(#inas-glow)" />
+      <rect width="64" height="64" rx="14" fill={`url(#${id}-bg)`} />
+      <rect width="64" height="64" rx="14" fill={`url(#${id}-glow)`} />
 
       {/* Laptop screen */}
       <rect
@@ -54,7 +56,7 @@ export function LaptopMark({ className }: { className?: string }) {
         fontSize="14.5"
         fontWeight="700"
         letterSpacing="0.5"
-        fill="url(#inas-mono)"
+        fill={`url(#${id}-mono)`}
       >
         IH
       </text>

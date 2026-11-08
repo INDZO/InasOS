@@ -1,25 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import type { AppId } from "@/types/os";
-import FinderApp from "./FinderApp";
-import AboutApp from "./AboutApp";
-import ProjectsApp from "./ProjectsApp";
-import SkillsApp from "./SkillsApp";
-import EducationApp from "./EducationApp";
-import HackathonApp from "./HackathonApp";
-import TerminalApp from "./TerminalApp";
-import CVApp from "./CVApp";
-import ContactApp from "./ContactApp";
-import SettingsApp from "./SettingsApp";
-import MiniGameApp from "./MiniGameApp";
-import TrashApp from "./TrashApp";
+const FinderApp = dynamic(() => import("./FinderApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const AboutApp = dynamic(() => import("./AboutApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const ProjectsApp = dynamic(() => import("./ProjectsApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const SkillsApp = dynamic(() => import("./SkillsApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const EducationApp = dynamic(() => import("./EducationApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const HackathonApp = dynamic(() => import("./HackathonApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const TerminalApp = dynamic(() => import("./TerminalApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const CVApp = dynamic(() => import("./CVApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const ContactApp = dynamic(() => import("./ContactApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const SettingsApp = dynamic(() => import("./SettingsApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const MiniGameApp = dynamic(() => import("./MiniGameApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const TrashApp = dynamic(() => import("./TrashApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 
 type Props = { appId: AppId; surface: "desktop" | "mobile" };
 
 export default function AppRenderer({ appId, surface }: Props) {
   switch (appId) {
     case "finder":
-      return <FinderApp />;
+      return <FinderApp surface={surface} />;
     case "about":
       return <AboutApp />;
     case "projects":

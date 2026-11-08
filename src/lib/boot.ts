@@ -1,29 +1,42 @@
-// Boot preferences. The boot animation is part of the InasOS experience and
-// plays on every full page load by default. Users can disable it permanently
-// via Settings ("Show boot on startup"), and "Replay boot" always overrides
-// that for a single run.
+// Settings can enable the startup animation or request a one-off replay.
 
 export const BOOT_SHOW_KEY = "inasos.boot.showOnStartup.v1";
 const BOOT_REPLAY_KEY = "inasos.boot.replay";
 
+function readStorage(key: string, session = false): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return (session ? window.sessionStorage : window.localStorage).getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key: string, value: string | null, session = false): void {
+  if (typeof window === "undefined") return;
+  try {
+    const storage = session ? window.sessionStorage : window.localStorage;
+    if (value === null) storage.removeItem(key);
+    else storage.setItem(key, value);
+  } catch {
+    // Private browsing and blocked storage must not prevent opening the site.
+  }
+}
+
 export function getShowBootOnStartup(): boolean {
-  if (typeof window === "undefined") return true;
-  return window.localStorage.getItem(BOOT_SHOW_KEY) !== "0";
+  return readStorage(BOOT_SHOW_KEY) === "1";
 }
 
 export function setShowBootOnStartup(value: boolean): void {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(BOOT_SHOW_KEY, value ? "1" : "0");
+  writeStorage(BOOT_SHOW_KEY, value ? "1" : "0");
 }
 
 export function requestBootReplay(): void {
-  if (typeof window === "undefined") return;
-  window.sessionStorage.setItem(BOOT_REPLAY_KEY, "1");
+  writeStorage(BOOT_REPLAY_KEY, "1", true);
 }
 
 export function consumeBootReplay(): boolean {
-  if (typeof window === "undefined") return false;
-  const requested = window.sessionStorage.getItem(BOOT_REPLAY_KEY) === "1";
-  if (requested) window.sessionStorage.removeItem(BOOT_REPLAY_KEY);
+  const requested = readStorage(BOOT_REPLAY_KEY, true) === "1";
+  if (requested) writeStorage(BOOT_REPLAY_KEY, null, true);
   return requested;
 }

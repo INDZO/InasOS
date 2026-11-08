@@ -49,7 +49,7 @@ export default function EducationApp() {
               </Badge>
             </div>
             <div>
-              <div className="text-[10.5px] uppercase tracking-[0.18em] text-zinc-500">
+              <div className="text-[10.5px] uppercase tracking-[0.18em] text-[var(--os-muted)]">
                 {copy.topics}
               </div>
               <div className="mt-1.5 flex flex-wrap gap-1.5">

@@ -26,7 +26,7 @@ import {
 
 export default function SettingsApp() {
   const [resetMsg, setResetMsg] = useState<string | null>(null);
-  const [showBoot, setShowBoot] = useState(true);
+  const [showBoot, setShowBoot] = useState(false);
   const language = useLanguageStore((s) => s.language);
   const theme = useDesktopStore((s) => s.theme);
   const resetDesktopLayout = useDesktopStore((s) => s.resetDesktopLayout);
@@ -74,7 +74,7 @@ export default function SettingsApp() {
           resetLayout: "Resetuj ikonice",
           boot: "Boot animacija",
           bootText:
-            "Boot animacija je deo InasOS doživljaja i prikazuje se pri svakom učitavanju stranice.",
+            "Uvodna animacija je opciona. Možeš je uključiti pri pokretanju ili pustiti jednom.",
           showBoot: "Prikaži boot pri pokretanju",
           showBootText:
             "Kada je uključeno, boot se prikazuje pri svakom učitavanju. Isključi da ga preskočiš.",
@@ -119,7 +119,7 @@ export default function SettingsApp() {
           resetLayout: "Reset icons",
           boot: "Boot animation",
           bootText:
-            "The boot animation is part of the InasOS experience and plays on every full page load.",
+            "The startup animation is optional. Enable it on startup or replay it once.",
           showBoot: "Show boot on startup",
           showBootText:
             "When on, boot plays on every page load. Turn it off to skip straight to the desktop.",

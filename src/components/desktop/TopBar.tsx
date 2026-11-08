@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BatteryFull,
   ChevronDown,
   HelpCircle,
+  LayoutList,
   Monitor,
   Power,
   SlidersHorizontal,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { useWindowStore } from "@/store/useWindowStore";
 import { appName, localizedProfile } from "@/data/i18n";
+import { portfolioViews } from "@/data/portfolio-views";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { InasLogo } from "@/components/InasLogo";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -49,6 +51,7 @@ type Props = {
 
 export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
   const now = useClock();
+  const barRef = useRef<HTMLDivElement>(null);
   const language = useLanguageStore((s) => s.language);
   const openWindow = useWindowStore((s) => s.openWindow);
   const closeWindow = useWindowStore((s) => s.closeWindow);
@@ -63,36 +66,35 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
   const wallpaperIntensity = useDesktopStore((s) => s.wallpaperIntensity);
   const setWallpaperIntensity = useDesktopStore((s) => s.setWallpaperIntensity);
   const profile = localizedProfile[language];
+  const view = portfolioViews[language];
 
   const activeTitle =
     activeWindowId && !windows[activeWindowId]?.minimized
       ? activeWindowId
       : null;
-  const arrangeLabel = language === "sr" ? "Slozi" : "Arrange";
-  const resetLabel = language === "sr" ? "Reset" : "Reset";
+  const arrangeLabel = language === "sr" ? "Složi ikone" : "Arrange icons";
+  const resetLabel = language === "sr" ? "Vrati raspored" : "Reset layout";
   const menuCopy =
     language === "sr"
       ? {
-          file: "File",
-          window: "Window",
-          help: "Help",
+          window: "Prozor",
+          help: "Pomoć",
           about: "O InasOS-u",
           settings: "Podešavanja",
           start: "Start",
-          restart: "Restart",
+          restart: "Ponovo pokreni",
           finder: "Otvori Finder",
           cv: "Otvori CV",
           contact: "Otvori Kontakt",
           minimize: "Minimizuj aktivni prozor",
           close: "Zatvori aktivni prozor",
           closeAll: "Zatvori sve prozore",
-          terminal: "Terminal help",
+          terminal: "Pomoć za terminal",
           github: "GitHub profil",
-          control: "Control Center",
+          control: "Kontrolni centar",
           wallpaper: "Intenzitet pozadine",
         }
       : {
-          file: "File",
           window: "Window",
           help: "Help",
           about: "About InasOS",
@@ -115,16 +117,38 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
 
+  const activeTrigger = () => barRef.current?.querySelector<HTMLButtonElement>(
+    `[data-desktop-disclosure="${activeMenu}"]`
+  );
+
   const runMenuAction = (action: () => void) => {
+    const trigger = activeTrigger();
     action();
     closeMenus();
+    requestAnimationFrame(() => {
+      if (!useDesktopStore.getState().launcherOpen && document.activeElement === document.body) {
+        trigger?.focus({ preventScroll: true });
+      }
+    });
   };
 
   return (
     <div
+      ref={barRef}
       className="absolute left-0 right-0 top-0 z-[90]"
       data-os-topbar
       onMouseDown={(e) => e.stopPropagation()}
+      onBlur={(event) => {
+        if (activeMenu && !event.currentTarget.contains(event.relatedTarget)) closeMenus();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && activeMenu) {
+          event.preventDefault();
+          event.stopPropagation();
+          activeTrigger()?.focus({ preventScroll: true });
+          closeMenus();
+        }
+      }}
     >
       <div className="flex h-7 items-center justify-between border-b border-[color:var(--os-border)] bg-[var(--os-menubar)] px-3 text-[12.5px] text-[var(--os-text)] shadow-[0_8px_28px_-20px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
         <div className="flex min-w-0 items-center gap-0.5 self-stretch">
@@ -136,9 +160,9 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
                 "mr-0.5 flex h-full items-center rounded-md px-1.5 transition-colors hover:bg-[var(--os-control)]",
                 activeMenu === "inas" && "bg-[var(--os-control-hover)]"
               )}
-              aria-label="Open InasOS menu"
-              aria-haspopup="menu"
+              aria-label={language === "sr" ? "InasOS meni" : "Open InasOS menu"}
               aria-expanded={activeMenu === "inas"}
+              data-desktop-disclosure="inas"
             >
               <InasLogo compact showWordmark={false} />
             </button>
@@ -146,7 +170,10 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
               <MenuPopover className="left-0 top-full mt-1">
                 <MenuItem label={menuCopy.about} onClick={() => runMenuAction(() => openWindow("about"))} />
                 <MenuItem label={menuCopy.settings} onClick={() => runMenuAction(() => openWindow("settings"))} />
-                <MenuItem label={menuCopy.start} onClick={() => runMenuAction(openLauncher)} />
+                <MenuItem label={menuCopy.start} onClick={() => runMenuAction(() => {
+                  activeTrigger()?.focus({ preventScroll: true });
+                  openLauncher();
+                })} />
                 <MenuDivider />
                 <MenuItem
                   label={menuCopy.restart}
@@ -160,6 +187,7 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
           <div className="relative flex h-full items-center">
             <TopMenuButton
               label="InasOS"
+              id="file"
               active={activeMenu === "file"}
               onClick={() => toggleMenu("file")}
               bold
@@ -176,6 +204,7 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
           <div className="relative flex h-full items-center">
             <TopMenuButton
               label={menuCopy.window}
+              id="window"
               active={activeMenu === "window"}
               onClick={() => toggleMenu("window")}
             />
@@ -206,6 +235,7 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
           <div className="relative flex h-full items-center">
             <TopMenuButton
               label={menuCopy.help}
+              id="help"
               active={activeMenu === "help"}
               onClick={() => toggleMenu("help")}
             />
@@ -242,11 +272,17 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
         </div>
 
         <div className="relative flex items-center gap-2 text-[var(--os-muted)]">
+          <a href={view.path} className="inline-flex min-h-6 items-center gap-1.5 rounded-md px-2 font-semibold whitespace-nowrap text-[var(--os-text)] transition-colors hover:bg-[var(--os-control-hover)]">
+            <LayoutList className="size-3.5 text-[var(--os-accent)]" aria-hidden="true" />
+            {view.overview}
+          </a>
           <button
             type="button"
             onClick={() => toggleMenu("control")}
             className="hidden h-6 items-center gap-1.5 rounded-md px-1.5 text-[11.5px] text-[var(--os-text)] transition-colors hover:bg-[var(--os-control)] sm:inline-flex"
-            aria-label="Open Control Center"
+            aria-label={menuCopy.control}
+            aria-expanded={activeMenu === "control"}
+            data-desktop-disclosure="control"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             <ChevronDown className="h-3 w-3 text-[var(--os-muted)]" />
@@ -307,12 +343,14 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
 }
 
 function TopMenuButton({
+  id,
   label,
   active,
   onClick,
   className,
   bold,
 }: {
+  id: DesktopMenuId;
   label: string;
   active: boolean;
   onClick: () => void;
@@ -323,8 +361,8 @@ function TopMenuButton({
     <button
       type="button"
       onClick={onClick}
-      aria-haspopup="menu"
       aria-expanded={active}
+      data-desktop-disclosure={id}
       className={cn(
         "inline-flex h-full items-center rounded-md px-2 text-[12px] text-[var(--os-text)] transition-colors hover:bg-[var(--os-control)]",
         bold ? "font-semibold" : "font-medium",

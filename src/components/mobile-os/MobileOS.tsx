@@ -15,7 +15,7 @@ export default function MobileOS() {
     <div className="relative h-full w-full overflow-hidden">
       <OSWallpaper />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div data-mobile-home className="relative z-10 flex h-full min-h-0 flex-col" inert={Boolean(activeAppId)}>
         <MobileStatusBar />
         <MobileHome />
         <MobileDock />

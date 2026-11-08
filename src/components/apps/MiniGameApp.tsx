@@ -153,7 +153,7 @@ export default function MiniGameApp() {
 
         <div
           ref={boardRef}
-          className="relative h-72 w-full overflow-hidden rounded-xl border border-white/10 bg-[#040608]"
+          className="relative h-72 w-full overflow-hidden rounded-xl border border-[var(--os-border)] bg-[var(--os-bg)]"
         >
           <div className="pointer-events-none absolute inset-0 os-grid opacity-30" />
           {!running && (
@@ -161,14 +161,14 @@ export default function MiniGameApp() {
               {timeLeft === 0 ? (
                 <div>
                   <CardTitle>{copy.over}</CardTitle>
-                  <p className="mt-1 text-[13px] text-zinc-400">
+                  <p className="mt-1 text-[13px] text-[var(--os-muted)]">
                     {copy.result}
                   </p>
                 </div>
               ) : (
                 <div>
-                  <Bug className="mx-auto h-9 w-9 text-orange-300" />
-                  <p className="mt-2 text-[13px] text-zinc-300">
+                  <Bug className="mx-auto h-9 w-9 text-[var(--os-accent)]" />
+                  <p className="mt-2 text-[13px] text-[var(--os-text)]">
                     {copy.prompt}
                   </p>
                 </div>
@@ -181,10 +181,10 @@ export default function MiniGameApp() {
               key={b.id}
               onClick={() => onCatch(b.id)}
               style={{ left: b.x, top: b.y }}
-              aria-label="Catch bug"
-              className="absolute grid h-10 w-10 place-items-center rounded-full bg-orange-500/20 ring-2 ring-orange-400/40 transition-transform hover:scale-110 active:scale-90"
+              aria-label={language === "sr" ? "Uhvati bubu" : "Catch bug"}
+              className="absolute grid h-10 w-10 place-items-center rounded-full bg-[var(--os-accent-soft)] text-[var(--os-accent)] ring-2 ring-current transition-transform hover:scale-110 active:scale-90"
             >
-              <Bug className="h-5 w-5 text-orange-200" />
+              <Bug className="h-5 w-5" />
             </button>
           ))}
         </div>
@@ -203,14 +203,14 @@ function Stat({
   tone: "emerald" | "red" | "orange";
 }) {
   const toneClass = {
-    emerald: "text-emerald-300",
-    red: "text-red-300",
-    orange: "text-orange-300",
+    emerald: "text-[var(--os-success)]",
+    red: "text-[var(--os-danger)]",
+    orange: "text-[var(--os-accent)]",
   }[tone];
 
   return (
     <div>
-      <div className="text-[10.5px] uppercase tracking-[0.18em] text-zinc-500">
+      <div className="text-[10.5px] uppercase tracking-[0.18em] text-[var(--os-muted)]">
         {label}
       </div>
       <div className={`text-lg font-semibold ${toneClass}`}>{value}</div>

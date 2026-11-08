@@ -138,9 +138,9 @@ function TerminalInner({
   return (
     <div
       onClick={() => inputRef.current?.focus()}
-      className="terminal-font flex h-full min-h-[320px] flex-col overflow-hidden rounded-xl border border-white/10 bg-black/55 text-[13px] leading-6 text-zinc-200"
+      className="terminal-font flex h-full min-h-[320px] flex-col overflow-hidden rounded-xl border border-[var(--os-border)] bg-[var(--os-bg)] text-[13px] leading-6 text-[var(--os-text)]"
     >
-      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+      <div className="flex items-center justify-between border-b border-[var(--os-border)] bg-[var(--os-control)] px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-[var(--os-muted)]">
         <span>InasOS Terminal</span>
         <span>{PROMPT}</span>
       </div>
@@ -153,30 +153,29 @@ function TerminalInner({
             key={line.id}
             className={cn(
               "whitespace-pre-wrap break-words",
-              line.kind === "input" && "text-orange-300",
-              line.kind === "error" && "text-red-300",
-              line.kind === "success" && "text-emerald-300",
-              line.kind === "system" && "text-zinc-400",
-              line.kind === "output" && "text-zinc-200"
+              line.kind === "input" && "text-[var(--os-accent)]",
+              line.kind === "error" && "text-[var(--os-danger)]",
+              line.kind === "success" && "text-[var(--os-success)]",
+              line.kind === "system" && "text-[var(--os-muted)]"
             )}
           >
             {line.text}
           </div>
         ))}
         <div className="mt-1 flex items-center gap-2">
-          <span className="shrink-0 text-orange-300">{PROMPT}</span>
-          <span className="shrink-0 text-zinc-500">$</span>
+          <span className="shrink-0 text-[var(--os-accent)]">{PROMPT}</span>
+          <span className="shrink-0 text-[var(--os-muted)]">$</span>
           <input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
-            aria-label="Terminal input"
+            aria-label={language === "sr" ? "Komanda terminala" : "Terminal command"}
             spellCheck={false}
             autoCapitalize="none"
             autoComplete="off"
             autoCorrect="off"
-            className="flex-1 bg-transparent text-zinc-100 caret-orange-400 outline-none placeholder:text-zinc-600"
+            className="min-w-0 flex-1 bg-transparent caret-[var(--os-accent)] outline-none placeholder:text-[var(--os-muted)]"
             placeholder={
               language === "sr"
                 ? `ukucaj "help" i pritisni Enter`
