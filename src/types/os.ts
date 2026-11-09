@@ -6,6 +6,7 @@ export type AppId =
   | "education"
   | "hackathon"
   | "terminal"
+  | "cv"
   | "contact"
   | "settings"
   | "minigame"

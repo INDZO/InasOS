@@ -19,6 +19,7 @@ export const appCopy: Record<Language, AppCopy> = {
       shortTitle: "Terminal",
       description: "Type help to begin",
     },
+    cv: { title: "CV", description: "Résumé in English (PDF)" },
     contact: { title: "Contact", description: "Get in touch" },
     settings: { title: "Settings", description: "InasOS preferences" },
     minigame: {
@@ -39,6 +40,7 @@ export const appCopy: Record<Language, AppCopy> = {
       shortTitle: "Terminal",
       description: "Ukucaj help za početak",
     },
+    cv: { title: "CV", description: "Biografija na engleskom (PDF)" },
     contact: { title: "Kontakt", description: "Javi se" },
     settings: { title: "Podešavanja", description: "InasOS opcije" },
     minigame: {

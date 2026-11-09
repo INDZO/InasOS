@@ -271,11 +271,12 @@ export function getProjectActions(project: Project, language: Language) {
     ? { live: "Otvori sajt", github: "Izvorni kod", documentation: "Dokumentacija", caseStudy: "Studija slučaja" }
     : { live: "View live", github: "Source code", documentation: "Engineering docs", caseStudy: "Case study" };
   const liveLabel = project.id === "giveback" ? (language === "sr" ? "Objavljeni frontend" : "Hosted frontend")
+    : project.id === "inasos" ? (language === "sr" ? "Istraži InasOS" : "Explore InasOS")
     : ["servispro", "elitdent", "bitka-upside-down"].includes(project.id) ? (language === "sr" ? "Isprobaj demo" : "Live demo")
     : labels.live;
 
   return [
-    { kind: "live", label: liveLabel, href: project.live },
+    { kind: "live", label: liveLabel, href: project.id === "inasos" ? "/" : project.live },
     { kind: "github", label: labels.github, href: project.github },
     { kind: "documentation", label: labels.documentation, href: project.documentation },
     { kind: "caseStudy", label: labels.caseStudy, href: project.caseStudy },

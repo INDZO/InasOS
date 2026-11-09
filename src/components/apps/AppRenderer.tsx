@@ -9,6 +9,7 @@ const SkillsApp = dynamic(() => import("./SkillsApp"), { loading: () => <div cla
 const EducationApp = dynamic(() => import("./EducationApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 const HackathonApp = dynamic(() => import("./HackathonApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 const TerminalApp = dynamic(() => import("./TerminalApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
+const CVApp = dynamic(() => import("./CVApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 const ContactApp = dynamic(() => import("./ContactApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 const SettingsApp = dynamic(() => import("./SettingsApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
 const MiniGameApp = dynamic(() => import("./MiniGameApp"), { loading: () => <div className="app-loading" role="status" aria-label="Loading"><span /></div> });
@@ -32,6 +33,8 @@ export default function AppRenderer({ appId, surface }: Props) {
       return <HackathonApp />;
     case "terminal":
       return <TerminalApp surface={surface} />;
+    case "cv":
+      return <CVApp surface={surface} />;
     case "contact":
       return <ContactApp />;
     case "settings":

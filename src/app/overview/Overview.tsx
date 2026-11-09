@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, FileText, Mail } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { InasLogo } from "@/components/InasLogo";
@@ -8,7 +8,7 @@ import { OverviewPreferences } from "@/components/OverviewPreferences";
 import { localizedProfile } from "@/data/i18n";
 import { getProjectActions, localizedProjects, projectGroupNames, projectGroups } from "@/data/projects";
 import { coreStack } from "@/data/skills";
-import { portfolioUrl, portfolioViews } from "@/data/portfolio-views";
+import { portfolioUrl, portfolioViews, resumePath } from "@/data/portfolio-views";
 import type { Project } from "@/types/portfolio";
 import type { Language } from "@/store/useLanguageStore";
 
@@ -18,12 +18,14 @@ const copy = {
     featuredLink: "Featured projects", all: "All projects", open: "Browse in InasOS", detail: "Project details",
     switchLanguage: "Read in Serbian", language: "Srpski", footer: "Designed and built by",
     bookingNote: "Fictional data in the browser", fullStackNote: "Public source includes the API",
+    resume: "View résumé (PDF)", resumeNewTab: "View résumé (PDF, opens in a new tab)",
   },
   sr: {
     skip: "Pređi na sadržaj portfolija", work: "Istaknuti inženjerski projekti", stack: "Glavne tehnologije", email: "E-pošta",
     featuredLink: "Istaknuti projekti", all: "Svi projekti", open: "Pregledaj u InasOS-u", detail: "Detalji projekta",
     switchLanguage: "Read in English", language: "English", footer: "Dizajn i razvoj",
     bookingNote: "Izmišljeni podaci u pregledaču", fullStackNote: "Javni kod obuhvata i API",
+    resume: "Otvori CV (PDF na engleskom)", resumeNewTab: "Otvori CV (PDF na engleskom, nova kartica)",
   },
 };
 
@@ -97,6 +99,9 @@ export default function Overview({ language }: { language: Language }) {
             <ul className="mt-2 flex flex-wrap gap-1.5 text-sm" aria-label={t.stack}>
               {coreStack.map((technology) => <li key={technology} className="overview-tag">{technology}</li>)}
             </ul>
+            <a href={resumePath} target="_blank" rel="noreferrer" aria-label={t.resumeNewTab} className="os-action os-action-primary mt-3">
+              <FileText size={16} aria-hidden="true" />{t.resume}<ArrowUpRight size={14} aria-hidden="true" />
+            </a>
             <div className="overview-actions">
               {profile.github && <a href={profile.github} className="os-action"><GithubIcon className="size-4" />GitHub</a>}
               {profile.linkedin && <a href={profile.linkedin} className="os-action">LinkedIn<ArrowUpRight size={15} aria-hidden="true" /></a>}

@@ -67,6 +67,7 @@ const helpLines = (language: Language) =>
         "  ls                Prikaz portfolio fajlova",
         "  open finder       Otvori Finder",
         "  open projects     Otvori Projects app",
+        "  open cv           Otvori CV",
         "  open contact      Otvori kontakt",
         "  open settings     Otvori Settings app",
         "  open trash        Otvori Trash",
@@ -87,6 +88,7 @@ const helpLines = (language: Language) =>
         "  ls                List portfolio files",
         "  open finder       Open Finder",
         "  open projects     Open the Projects app",
+        "  open cv           Open the CV app",
         "  open contact      Open the Contact app",
         "  open settings     Open Settings",
         "  open trash        Open Trash",
@@ -163,6 +165,7 @@ export function runCommand(raw: string, language: Language): TerminalResult {
         "projects/",
         "skills.app",
         "education.md",
+        "cv.app",
         "contact.app",
         "settings.app",
         "trash/",
@@ -178,6 +181,9 @@ export function runCommand(raw: string, language: Language): TerminalResult {
       return { lines, openApp: "projects" };
 
     case "open cv":
+      lines.push(ok(language === "sr" ? "Otvaram CV..." : "Opening CV..."));
+      return { lines, openApp: "cv" };
+
     case "open contact":
       lines.push(ok(language === "sr" ? "Otvaram kontakt..." : "Opening Contact..."));
       return { lines, openApp: "contact" };
