@@ -7,6 +7,7 @@ import { localizedProjects } from "@/data/i18n";
 import { desktopApps } from "@/data/apps";
 import OSWallpaper from "@/components/OSWallpaper";
 import { PortfolioViewSwitch } from "@/components/PortfolioViewSwitch";
+import { ViewResumeButton } from "@/components/ViewResumeButton";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import DesktopIcon from "./DesktopIcon";
@@ -166,6 +167,7 @@ export default function DesktopOS() {
         <p className="mt-3 max-w-lg text-sm leading-6 text-[var(--os-muted)] sm:text-base">{profile.tagline}</p>
         <div className="mt-4"><PortfolioViewSwitch language={language} view="interactive" /></div>
         <nav className="mt-5 flex flex-wrap gap-2" aria-label={isSerbian ? "Brze veze" : "Portfolio shortcuts"}>
+          <ViewResumeButton />
           <button type="button" className="os-action" onClick={() => navigatePortfolio("projects")}>
             <FolderOpen size={17} aria-hidden="true" /> {String(copy.projects)}
           </button>

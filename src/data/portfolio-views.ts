@@ -2,6 +2,7 @@ import type { Language } from "@/store/useLanguageStore";
 
 export const portfolioUrl = "https://hamzagicinas.vercel.app";
 export const resumePath = "/Inas_Hamzagic_Resume.pdf";
+export const resumeActionLabels = { en: "View Resume", sr: "Pogledaj CV" } satisfies Record<Language, string>;
 
 export const portfolioViews = {
   en: {

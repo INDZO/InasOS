@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useWindowStore } from "@/store/useWindowStore";
 import { appName, localizedProfile } from "@/data/i18n";
-import { portfolioViews } from "@/data/portfolio-views";
+import { portfolioViews, resumeActionLabels } from "@/data/portfolio-views";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { InasLogo } from "@/components/InasLogo";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -193,6 +193,7 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
             {activeMenu === "file" && (
               <MenuPopover className="left-0 top-full mt-1">
                 <MenuItem label={menuCopy.finder} onClick={() => runMenuAction(() => openWindow("finder"))} />
+                <MenuItem label={resumeActionLabels[language]} onClick={() => runMenuAction(() => openWindow("cv"))} />
                 <MenuItem label={menuCopy.contact} onClick={() => runMenuAction(() => openWindow("contact"))} />
               </MenuPopover>
             )}

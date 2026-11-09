@@ -14,7 +14,7 @@ import type { AppId } from "@/types/os";
 import { AppIcon } from "@/components/AppIcon";
 import { Button } from "@/components/ui/Button";
 import { appById } from "@/data/apps";
-import { localizedProfile, localizedProjects } from "@/data/i18n";
+import { appCopy, localizedProfile, localizedProjects } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { navigatePortfolio } from "@/lib/navigation";
 import { normalizeSearch, searchTokens } from "@/lib/search";
@@ -107,6 +107,14 @@ export default function FinderApp({ surface = "desktop" }: { surface?: "desktop"
               ? "Studentski projekti, hackathoni i full-stack radovi."
               : "Student projects, hackathons and full-stack work.",
           meta: `${projects.length} ${language === "sr" ? "projekata" : "projects"}`,
+        },
+        {
+          id: "cv-file",
+          name: language === "sr" ? "Biografija.pdf" : "Résumé.pdf",
+          kind: "file",
+          appId: "cv",
+          description: appCopy[language].cv.description,
+          meta: "PDF",
         },
         {
           id: "contact-app",

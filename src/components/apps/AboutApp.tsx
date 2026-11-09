@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/Badge";
+import { ViewResumeButton } from "@/components/ViewResumeButton";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { localizedProfile } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
@@ -59,6 +60,7 @@ export default function AboutApp() {
         <p className="text-[13.5px] leading-relaxed text-[var(--os-text)]">
           {profile.bio}
         </p>
+        <div className="mt-3"><ViewResumeButton /></div>
       </Card>
 
       <Card>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Copy, Mail, Check } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/BrandIcons";
+import { ViewResumeButton } from "@/components/ViewResumeButton";
 import { localizedProfile } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { Card, CardSubtitle, CardTitle } from "@/components/ui/Card";
@@ -24,7 +25,7 @@ export default function ContactApp() {
           send: "Pošalji email",
           copy: "Kopiraj email",
           copied: "Kopirano",
-          elsewhere: "Profili",
+          elsewhere: "Profili i biografija",
           error: "Kopiranje nije uspelo. Označi email adresu i kopiraj je, ili koristi dugme za slanje emaila.",
         }
       : {
@@ -34,7 +35,7 @@ export default function ContactApp() {
           send: "Send email",
           copy: "Copy email",
           copied: "Copied",
-          elsewhere: "Elsewhere",
+          elsewhere: "Profiles and résumé",
           error: "Could not copy. Select the email address to copy it, or use the email button.",
         };
 
@@ -112,35 +113,24 @@ export default function ContactApp() {
         </p>
       </Card>
 
-      {(profile.github || profile.linkedin) && (
-        <Card>
-          <CardSubtitle>{copy.elsewhere}</CardSubtitle>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {profile.github && (
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-[color:var(--os-border)] bg-[var(--os-control)] px-3 py-2 text-[13px] text-[var(--os-text)] hover:bg-[var(--os-control-hover)]"
-              >
-                <GithubIcon className="h-4 w-4" />
-                GitHub
-              </a>
-            )}
-            {profile.linkedin && (
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-[color:var(--os-border)] bg-[var(--os-control)] px-3 py-2 text-[13px] text-[var(--os-text)] hover:bg-[var(--os-control-hover)]"
-              >
-                <LinkedinIcon className="h-4 w-4" />
-                LinkedIn
-              </a>
-            )}
-          </div>
-        </Card>
-      )}
+      <Card>
+        <CardSubtitle>{copy.elsewhere}</CardSubtitle>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {profile.github && (
+            <a href={profile.github} target="_blank" rel="noopener noreferrer" className="os-action">
+              <GithubIcon className="h-4 w-4" />
+              GitHub
+            </a>
+          )}
+          {profile.linkedin && (
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="os-action">
+              <LinkedinIcon className="h-4 w-4" />
+              LinkedIn
+            </a>
+          )}
+          <ViewResumeButton />
+        </div>
+      </Card>
     </div>
   );
 }

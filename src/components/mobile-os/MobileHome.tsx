@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowRight, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { desktopApps } from "@/data/apps";
 import MobileIcon from "./MobileIcon";
 import { localizedProfile } from "@/data/i18n";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { navigatePortfolio } from "@/lib/navigation";
 import { PortfolioViewSwitch } from "@/components/PortfolioViewSwitch";
+import { ViewResumeButton } from "@/components/ViewResumeButton";
 
 export default function MobileHome() {
   const language = useLanguageStore((s) => s.language);
@@ -27,8 +28,9 @@ export default function MobileHome() {
         <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--os-muted)]">{profile.tagline}</p>
         <div className="mt-4"><PortfolioViewSwitch language={language} view="interactive" /></div>
         <nav aria-label={language === "sr" ? "Brze veze" : "Portfolio shortcuts"} className="mobile-shortcuts mt-4 flex flex-wrap gap-1.5">
+          <ViewResumeButton />
           <button type="button" onClick={() => navigatePortfolio("projects")} className="os-action">
-            {language === "sr" ? "Projekti" : "Projects"}<ArrowRight size={16} aria-hidden="true" />
+            {language === "sr" ? "Projekti" : "Projects"}
           </button>
           <button type="button" onClick={() => navigatePortfolio("contact")} className="os-action">
             <Mail size={16} aria-hidden="true" />{language === "sr" ? "Kontakt" : "Contact"}

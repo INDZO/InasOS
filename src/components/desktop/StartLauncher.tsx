@@ -4,8 +4,7 @@ import { useLayoutEffect, useMemo, useRef, useState, type RefObject } from "reac
 import { motion, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { apps } from "@/data/apps";
-import { appName } from "@/data/i18n";
-import { localizedProfile, localizedProjects } from "@/data/i18n";
+import { appCopy, appName, localizedProfile, localizedProjects } from "@/data/i18n";
 import { navigatePortfolio } from "@/lib/navigation";
 import { normalizeSearch, searchTokens } from "@/lib/search";
 import { AppIcon } from "@/components/AppIcon";
@@ -56,7 +55,7 @@ export default function StartLauncher({ returnFocus }: { returnFocus: RefObject<
   const visibleApps = useMemo(() => {
     const tokens = searchTokens(query);
     return apps.filter((app) => {
-      const text = normalizeSearch(`${appName(app.id, language)} ${app.description} ${app.title}`);
+      const text = normalizeSearch(`${appName(app.id, language)} ${appCopy[language][app.id].description} ${app.description} ${app.title}`);
       return tokens.every((token) => text.includes(token));
     });
   }, [language, query]);
