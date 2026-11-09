@@ -15,7 +15,7 @@ export function PortfolioViewSwitch({ language, view }: { language: Language; vi
       {view === "overview" ? (
         <span aria-current="page"><LayoutList size={16} aria-hidden="true" />{copy.overview}</span>
       ) : (
-        <a href={copy.path} className="portfolio-view-alternative">
+        <a href={copy.path} className="os-action-primary portfolio-view-alternative">
           <LayoutList size={17} aria-hidden="true" />
           <span>{copy.overview}<small>{copy.overviewDescription}</small></span>
           <ArrowUpRight size={15} aria-hidden="true" />

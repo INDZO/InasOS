@@ -109,17 +109,6 @@ export default function FinderApp({ surface = "desktop" }: { surface?: "desktop"
           meta: `${projects.length} ${language === "sr" ? "projekata" : "projects"}`,
         },
         {
-          id: "cv-file",
-          name: "Inas Hamzagic.pdf",
-          kind: "file",
-          appId: "cv",
-          description:
-            language === "sr"
-              ? "Radna verzija CV-ja za pregled i preuzimanje."
-              : "Draft CV available to preview and download.",
-          meta: "PDF",
-        },
-        {
           id: "contact-app",
           name: "Contact.app",
           kind: "app",

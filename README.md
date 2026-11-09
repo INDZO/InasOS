@@ -25,9 +25,10 @@ The site boots like a real OS and then splits into two responsive experiences:
 - Mobile OS:
   - Status bar, app grid, dock and full-screen app screens with back nav.
 - Light / dark theme and English / Serbian language, both persisted.
-- Apps: Finder, About, Projects, Skills, Education, Hackathon, CV, Contact,
+- Bilingual Quick Overview with featured projects, direct links and contact.
+- Apps: Finder, About, Projects, Skills, Education, Hackathon, Contact,
   Settings, Trash, Break Mode (bug-catcher game) and an interactive Terminal.
-- Terminal with command history: `help`, `whoami`, `projects`, `open cv`,
+- Terminal with command history: `help`, `whoami`, `projects`, `open contact`,
   `open github`, `sudo hire-inas`, `clear` and more.
 - Type-safe data-first content (`src/data/*.ts`).
 - Accessible: real buttons, keyboard support, focus rings, ARIA labels,
@@ -75,7 +76,7 @@ src/
       AppRenderer.tsx AppHeader.tsx FinderApp.tsx
       AboutApp.tsx ProjectsApp.tsx SkillsApp.tsx
       EducationApp.tsx HackathonApp.tsx TerminalApp.tsx
-      CVApp.tsx ContactApp.tsx SettingsApp.tsx
+      ContactApp.tsx SettingsApp.tsx
       MiniGameApp.tsx TrashApp.tsx
     ui/ Badge.tsx Button.tsx Card.tsx
   data/    profile.ts projects.ts skills.ts apps.ts i18n.ts
@@ -84,7 +85,7 @@ src/
   lib/     cn.ts terminal.ts
   types/   os.ts portfolio.ts
 public/
-  cv/Inas-Hamzagic-CV.pdf   # add your CV here
+  projects/             # project previews
 ```
 
 ## Local setup
@@ -104,22 +105,11 @@ All content lives in `src/data/`:
 | File                  | What to edit                                                                |
 | --------------------- | --------------------------------------------------------------------------- |
 | `src/data/profile.ts` | name, role, tagline, bio, status, email, education, achievement, languages  |
-| `src/data/projects.ts`| project entries (name, type, description, tech, features, learned, links)   |
+| `src/data/projects.ts`| project entries (group, bilingual copy, technologies, previews, links)   |
 | `src/data/skills.ts`  | grouped skills                                                              |
 | `src/data/apps.ts`    | which apps appear on desktop & in the dock                                  |
 
-Set `github` / `linkedin` / `live` to a real URL string to enable the
-corresponding buttons. Leave them as `null` and the buttons stay hidden.
-
-## Adding the CV PDF
-
-Drop your CV at:
-
-```
-public/cv/Inas-Hamzagic-CV.pdf
-```
-
-The **CV** app will pick it up automatically (download + open + preview).
+Set project links only for public destinations. The interface hides actions for omitted links.
 
 ## Deploying to Vercel
 

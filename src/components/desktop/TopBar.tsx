@@ -84,7 +84,6 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
           start: "Start",
           restart: "Ponovo pokreni",
           finder: "Otvori Finder",
-          cv: "Otvori CV",
           contact: "Otvori Kontakt",
           minimize: "Minimizuj aktivni prozor",
           close: "Zatvori aktivni prozor",
@@ -102,7 +101,6 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
           start: "Start",
           restart: "Restart",
           finder: "Open Finder",
-          cv: "Open CV",
           contact: "Open Contact",
           minimize: "Minimize active window",
           close: "Close active window",
@@ -195,7 +193,6 @@ export default function TopBar({ onArrangeIcons, onResetDesktop }: Props) {
             {activeMenu === "file" && (
               <MenuPopover className="left-0 top-full mt-1">
                 <MenuItem label={menuCopy.finder} onClick={() => runMenuAction(() => openWindow("finder"))} />
-                <MenuItem label={menuCopy.cv} onClick={() => runMenuAction(() => openWindow("cv"))} />
                 <MenuItem label={menuCopy.contact} onClick={() => runMenuAction(() => openWindow("contact"))} />
               </MenuPopover>
             )}

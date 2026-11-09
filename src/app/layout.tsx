@@ -16,13 +16,15 @@ const jetbrainsMono = JetBrains_Mono({
   preload: false,
 });
 
+const portfolioTitle = profile.name + " — " + profile.role;
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://hamzagicinas.vercel.app"),
   title: {
-    default: "Inas Hamzagić — Software Engineering Portfolio",
+    default: portfolioTitle,
     template: "%s · Inas Hamzagić",
   },
-  description: profile.tagline,
+  description: profile.bio,
   alternates: { canonical: "/" },
   applicationName: "InasOS",
   keywords: [
@@ -32,14 +34,16 @@ export const metadata: Metadata = {
     "Portfolio",
     "Web Development",
     "React",
-    "Next.js",
+    "ASP.NET Core",
+    "C#",
+    "SQL",
     "Novi Pazar",
   ],
   authors: [{ name: "Inas Hamzagić" }],
   creator: "Inas Hamzagić",
   openGraph: {
-    title: "Inas Hamzagić — Software Engineering Portfolio",
-    description: profile.tagline,
+    title: portfolioTitle,
+    description: profile.bio,
     url: "/",
     siteName: "InasOS",
     type: "website",
@@ -47,8 +51,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Inas Hamzagić — Software Engineering Portfolio",
-    description: profile.tagline,
+    title: portfolioTitle,
+    description: profile.bio,
     images: ["/opengraph-image"],
   },
   robots: { index: true, follow: true },

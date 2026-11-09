@@ -42,7 +42,7 @@ export default function OSShell() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = language;
+    document.documentElement.lang = language === "sr" ? "sr-Latn" : "en";
     document.documentElement.classList.toggle("theme-light", theme === "light");
     document.documentElement.classList.toggle("theme-dark", theme === "dark");
   }, [language, theme]);

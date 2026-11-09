@@ -18,21 +18,23 @@ export type Education = {
   topics: string[];
 };
 
+export type ProjectGroup = "featured" | "academic" | "creative" | "collaboration";
+
 export type Project = {
   id: string;
   name: string;
+  group: ProjectGroup;
   type: string;
   description: string;
+  detail: string;
   tech: string[];
-  features: string[];
-  learned: string;
-  github: string | null;
-  live: string | null;
+  github?: string;
+  live?: string;
   documentation?: string;
-  category?: "web" | "fullstack" | "desktop" | "design";
-  featured?: boolean;
-  role?: string;
-  accent?: string;
+  caseStudy?: string;
+  note?: string;
+  image?: string;
+  imageAlt?: string;
 };
 
 export type SkillGroup = {

@@ -8,6 +8,10 @@ import { useWindowStore } from "@/store/useWindowStore";
 import { useMobileStore } from "@/store/useMobileStore";
 
 const eventName = "inasos:navigate";
+const legacyProjectIds: Record<string, string> = {
+  "knowledge-that-doesnt-fade": "oranz",
+  "stomatology-is": "elitdent",
+};
 export const desktopMediaQuery = "(min-width: 1024px) and (min-height: 480px)";
 const subscribe = (callback: () => void) => {
   window.addEventListener("hashchange", callback);
@@ -21,7 +25,9 @@ const subscribe = (callback: () => void) => {
 };
 
 export function parseLocation(hash: string): { app: AppId | null; project?: string } {
-  const [app, project] = hash.replace(/^#/, "").split("/");
+  const [app, slug] = hash.replace(/^#/, "").split("/");
+  const project = Object.hasOwn(legacyProjectIds, slug) ? legacyProjectIds[slug] : slug;
+  if (app === "cv") return { app: "contact" };
   if (!apps.some((item) => item.id === app)) return { app: null };
   return { app: app as AppId, project: app === "projects" && projects.some((item) => item.id === project) ? project : undefined };
 }

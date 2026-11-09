@@ -66,15 +66,6 @@ export const apps: AppDefinition[] = [
     defaultSize: { width: 760, height: 460 },
   },
   {
-    id: "cv",
-    title: "CV",
-    iconName: "file",
-    description: "Resume / CV",
-    showOnDesktop: true,
-    showInDock: true,
-    defaultSize: { width: 720, height: 520 },
-  },
-  {
     id: "contact",
     title: "Contact",
     iconName: "mail",

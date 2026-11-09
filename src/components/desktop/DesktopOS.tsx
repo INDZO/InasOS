@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, FolderOpen, FileDown, Grid3X3, Mail, Moon, RotateCcw, Sun } from "lucide-react";
+import { ArrowUpRight, FolderOpen, Grid3X3, Mail, Moon, RotateCcw, Sun } from "lucide-react";
 import { GithubIcon } from "@/components/BrandIcons";
 import { localizedProjects } from "@/data/i18n";
 import { desktopApps } from "@/data/apps";
-import { cvPath, portfolioViews } from "@/data/portfolio-views";
 import OSWallpaper from "@/components/OSWallpaper";
 import { PortfolioViewSwitch } from "@/components/PortfolioViewSwitch";
 import TopBar from "./TopBar";
@@ -46,7 +45,7 @@ export default function DesktopOS() {
   const profile = localizedProfile[language];
   const copy = shellCopy[language];
   const isSerbian = language === "sr";
-  const featured = localizedProjects[language].filter((project) => project.featured && project.id !== "inasos").slice(0, 3);
+  const featured = localizedProjects[language].filter((project) => project.group === "featured" && project.id !== "inasos").slice(0, 3);
   const iconPositions = useDesktopStore((s) => s.iconPositions);
   const resetDesktopLayout = useDesktopStore((s) => s.resetDesktopLayout);
   const contextMenu = useDesktopStore((s) => s.contextMenu);
@@ -167,10 +166,9 @@ export default function DesktopOS() {
         <p className="mt-3 max-w-lg text-sm leading-6 text-[var(--os-muted)] sm:text-base">{profile.tagline}</p>
         <div className="mt-4"><PortfolioViewSwitch language={language} view="interactive" /></div>
         <nav className="mt-5 flex flex-wrap gap-2" aria-label={isSerbian ? "Brze veze" : "Portfolio shortcuts"}>
-          <button type="button" className="os-action os-action-primary" onClick={() => navigatePortfolio("projects")}>
+          <button type="button" className="os-action" onClick={() => navigatePortfolio("projects")}>
             <FolderOpen size={17} aria-hidden="true" /> {String(copy.projects)}
           </button>
-          <a className="os-action" href={cvPath} aria-label={portfolioViews[language].draftCv} download><FileDown size={16} aria-hidden="true" /> {isSerbian ? "Radna verzija CV-ja" : "Draft CV"}</a>
           <button type="button" className="os-action" onClick={() => openWindow("contact")}><Mail size={16} aria-hidden="true" />{isSerbian ? "Kontakt" : "Contact"}</button>
           {profile.github && <a className="os-action" href={profile.github} target="_blank" rel="noreferrer"><GithubIcon className="size-4" /> GitHub</a>}
         </nav>

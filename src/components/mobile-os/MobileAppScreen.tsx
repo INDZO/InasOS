@@ -49,7 +49,7 @@ export default function MobileAppScreen() {
       if (useMobileStore.getState().activeAppId) return;
       const target = opener?.isConnected && opener !== document.body
         ? opener
-        : document.querySelector<HTMLElement>("[data-mobile-home] .os-action-primary");
+        : document.querySelector<HTMLElement>("[data-mobile-home] .portfolio-view-alternative");
       target?.focus({ preventScroll: true });
     });
   }, [opener]);

@@ -15,14 +15,14 @@ export default function EducationApp() {
           eyebrow: "InasOS · Obrazovanje",
           title: "Akademski put",
           description:
-            "Od IT smera u gimnaziji do osnovnih studija softverskog inženjerstva.",
+            "Student završne godine softverskog inženjerstva na Državnom univerzitetu u Novom Pazaru.",
           topics: "Oblasti",
         }
       : {
           eyebrow: "InasOS · Education",
           title: "Academic background",
           description:
-            "From high-school IT to ongoing Bachelor studies in Software Engineering.",
+            "Final-year Software Engineering student at the State University of Novi Pazar.",
           topics: "Topics",
         };
 
@@ -40,7 +40,7 @@ export default function EducationApp() {
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div className="min-w-0">
                 <CardTitle>{e.degree}</CardTitle>
-                <p className="mt-1 text-[13px] text-zinc-400">
+                <p className="mt-1 text-[13px] text-[var(--os-muted)]">
                   {e.institution}
                 </p>
               </div>

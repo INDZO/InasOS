@@ -1,6 +1,6 @@
 "use client";
 
-import { localizedSkillGroups } from "@/data/skills";
+import { coreStack, localizedSkillGroups } from "@/data/skills";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardSubtitle, CardTitle } from "@/components/ui/Card";
 import { localizedProfile } from "@/data/i18n";
@@ -57,7 +57,7 @@ export default function SkillsApp() {
           <Row label={copy.role} value={profile.role} />
           <Row
             label={copy.stack}
-            value="React / Angular / ASP.NET Core / SQL"
+            value={coreStack.join(" · ")}
           />
           <Row
             label={copy.interests}
@@ -91,8 +91,8 @@ export default function SkillsApp() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <dt className="text-zinc-500">{label}</dt>
-      <dd className="text-right text-zinc-200">{value}</dd>
+      <dt className="text-[var(--os-muted)]">{label}</dt>
+      <dd className="text-right text-[var(--os-text)]">{value}</dd>
     </div>
   );
 }

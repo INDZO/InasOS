@@ -56,32 +56,32 @@ export default function AboutApp() {
 
       <Card>
         <CardTitle className="mb-2">{labels.bio}</CardTitle>
-        <p className="text-[13.5px] leading-relaxed text-zinc-300">
+        <p className="text-[13.5px] leading-relaxed text-[var(--os-text)]">
           {profile.bio}
         </p>
       </Card>
 
       <Card>
         <CardTitle className="mb-2">{labels.focus}</CardTitle>
-        <p className="text-[13.5px] leading-relaxed text-zinc-300">
+        <p className="text-[13.5px] leading-relaxed text-[var(--os-text)]">
           {profile.focus}
         </p>
       </Card>
 
       <Card>
         <CardTitle className="mb-2">{labels.availability}</CardTitle>
-        <p className="text-[13.5px] leading-relaxed text-zinc-300">
+        <p className="text-[13.5px] leading-relaxed text-[var(--os-text)]">
           {profile.status}
         </p>
       </Card>
 
       <Card>
         <CardTitle className="mb-3">{labels.languages}</CardTitle>
-        <ul className="space-y-1.5 text-[13.5px] text-zinc-300">
+        <ul className="space-y-1.5 text-[13.5px] text-[var(--os-text)]">
           {languageRows[language].map((l) => (
             <li key={l.name} className="flex items-center justify-between">
               <span>{l.name}</span>
-              <span className="text-zinc-500">{l.level}</span>
+              <span className="text-[var(--os-muted)]">{l.level}</span>
             </li>
           ))}
         </ul>

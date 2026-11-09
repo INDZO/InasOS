@@ -6,7 +6,7 @@ import {
   localizedProfile,
   localizedProjects,
 } from "@/data/i18n";
-import { skillGroups } from "@/data/skills";
+import { localizedSkillGroups } from "@/data/skills";
 
 export type TerminalLine = {
   id: string;
@@ -67,7 +67,7 @@ const helpLines = (language: Language) =>
         "  ls                Prikaz portfolio fajlova",
         "  open finder       Otvori Finder",
         "  open projects     Otvori Projects app",
-        "  open cv           Otvori CV app",
+        "  open contact      Otvori kontakt",
         "  open settings     Otvori Settings app",
         "  open trash        Otvori Trash",
         "  open github       Otvori GitHub profil",
@@ -87,7 +87,7 @@ const helpLines = (language: Language) =>
         "  ls                List portfolio files",
         "  open finder       Open Finder",
         "  open projects     Open the Projects app",
-        "  open cv           Open the CV app",
+        "  open contact      Open the Contact app",
         "  open settings     Open Settings",
         "  open trash        Open Trash",
         "  open github       Open GitHub profile",
@@ -122,7 +122,7 @@ export function runCommand(raw: string, language: Language): TerminalResult {
       return { lines };
 
     case "skills":
-      skillGroups.forEach((g) => {
+      localizedSkillGroups[language].forEach((g) => {
         lines.push(ok(`# ${g.title}`));
         lines.push(out(`  ${g.items.join(", ")}`));
         lines.push(out(""));
@@ -133,7 +133,7 @@ export function runCommand(raw: string, language: Language): TerminalResult {
       projects.forEach((p) => {
         lines.push(ok(`- ${p.name}  -  ${p.type}`));
         lines.push(out(`    ${p.description}`));
-        lines.push(out(`    tech: ${p.tech.join(", ")}`));
+        if (p.tech.length) lines.push(out("    " + p.tech.join(", ")));
         lines.push(out(""));
       });
       return { lines };
@@ -163,7 +163,6 @@ export function runCommand(raw: string, language: Language): TerminalResult {
         "projects/",
         "skills.app",
         "education.md",
-        "cv.pdf",
         "contact.app",
         "settings.app",
         "trash/",
@@ -179,8 +178,9 @@ export function runCommand(raw: string, language: Language): TerminalResult {
       return { lines, openApp: "projects" };
 
     case "open cv":
-      lines.push(ok(language === "sr" ? "Otvaram CV..." : "Opening CV..."));
-      return { lines, openApp: "cv" };
+    case "open contact":
+      lines.push(ok(language === "sr" ? "Otvaram kontakt..." : "Opening Contact..."));
+      return { lines, openApp: "contact" };
 
     case "open settings":
       lines.push(ok(language === "sr" ? "Otvaram podešavanja..." : "Opening Settings..."));

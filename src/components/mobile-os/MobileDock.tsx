@@ -10,7 +10,7 @@ export default function MobileDock() {
   const openApp = useMobileStore((s) => s.openApp);
   const language = useLanguageStore((s) => s.language);
   const mobileDockApps = dockApps.filter((app) =>
-    ["projects", "cv", "contact", "settings"].includes(app.id)
+    ["projects", "contact", "settings"].includes(app.id)
   );
 
   return (
