@@ -1,4 +1,4 @@
-// Settings can enable the startup animation or request a one-off replay.
+// The startup animation is on by default. Settings can turn it off or replay it once.
 
 export const BOOT_SHOW_KEY = "inasos.boot.showOnStartup.v1";
 const BOOT_REPLAY_KEY = "inasos.boot.replay";
@@ -24,7 +24,7 @@ function writeStorage(key: string, value: string | null, session = false): void 
 }
 
 export function getShowBootOnStartup(): boolean {
-  return readStorage(BOOT_SHOW_KEY) === "1";
+  return readStorage(BOOT_SHOW_KEY) !== "0";
 }
 
 export function setShowBootOnStartup(value: boolean): void {

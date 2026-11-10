@@ -14,7 +14,7 @@ The site boots like a real OS and then splits into two responsive experiences:
 
 ## Features
 
-- Short, skippable OS-style boot animation (only shown on first visit).
+- Short, skippable OS-style boot animation, enabled by default on the main page.
 - Desktop OS:
   - macOS-style menu bar with anchored dropdown menus and a live clock.
   - Desktop icons (draggable, position persisted) and a bottom dock.
@@ -137,8 +137,8 @@ Terminal command parsing lives in `src/lib/terminal.ts` and store logic in
 ## Known limitations
 
 - Windows are draggable and maximizable but not free-resizable.
-- The boot animation shows once per browser (tracked in `localStorage`);
-  use **Settings → Replay boot** to see it again.
+- The boot animation respects reduced motion. Use **Settings → Boot animation**
+  to change your startup preference or replay it once.
 - Project repositories are not individually linked — only the main GitHub
   profile is configured. Set each project's `github` / `live` field to enable
   per-project links.

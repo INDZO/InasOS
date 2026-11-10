@@ -77,7 +77,7 @@ export default function SettingsApp() {
             "Uvodna animacija je opciona. Možeš je uključiti pri pokretanju ili pustiti jednom.",
           showBoot: "Prikaži boot pri pokretanju",
           showBootText:
-            "Kada je uključeno, boot se prikazuje pri svakom učitavanju. Isključi da ga preskočiš.",
+            "Kada je uključeno, boot se prikazuje pri učitavanju glavne stranice. Isključi da ga preskočiš.",
           replay: "Pusti boot ponovo",
           reset: "Učitavam boot...",
           on: "Uključeno",
@@ -122,7 +122,7 @@ export default function SettingsApp() {
             "The startup animation is optional. Enable it on startup or replay it once.",
           showBoot: "Show boot on startup",
           showBootText:
-            "When on, boot plays on every page load. Turn it off to skip straight to the desktop.",
+            "When on, boot plays when you load the main page. Turn it off to skip straight to the portfolio.",
           replay: "Replay boot",
           reset: "Reloading into boot...",
           on: "On",
